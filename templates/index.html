@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Student — Home</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --navy: #1E3A8A; --blue: #2563EB;
+            --surface: #FFFFFF; --text: #1E293B;
+            --muted: #64748B; --bg: #F0F4FF;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--navy) 0%, var(--blue) 100%);
+            min-height: 100vh;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .hero {
+            text-align: center;
+            color: #fff;
+            padding: 40px 20px;
+            animation: fadeUp .6s ease both;
+        }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .hero-icon {
+            font-size: 72px;
+            display: block;
+            margin-bottom: 20px;
+            animation: bounce 2s ease-in-out infinite;
+        }
+        @keyframes bounce {
+            0%,100% { transform: translateY(0); }
+            50%      { transform: translateY(-12px); }
+        }
+        .hero h1 { font-size: 42px; font-weight: 800; letter-spacing: -1px; }
+        .hero p  { color: rgba(255,255,255,.75); font-size: 17px; margin: 12px 0 36px; }
+        .btn-hero {
+            background: #fff;
+            color: var(--navy);
+            padding: 16px 40px;
+            border-radius: 16px;
+            font-size: 16px;
+            font-weight: 700;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all .25s;
+            box-shadow: 0 8px 30px rgba(0,0,0,.2);
+        }
+        .btn-hero:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 40px rgba(0,0,0,.25);
+            color: var(--navy);
+        }
+    </style>
+</head>
+<body>
+    <div class="hero">
+        <span class="hero-icon">☁</span>
+        <h1>Smart Student</h1>
+        <p>Data Compression & Storage Management System</p>
+        <a href="/login" class="btn-hero">🔐 Get Started →</a>
+    </div>
+</body>
+</html>

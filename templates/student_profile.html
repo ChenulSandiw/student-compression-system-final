@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ student[1] }} — Profile</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --navy:    #0F172A; --blue: #2563EB; --blue2: #1D4ED8;
+            --cyan:    #06B6D4; --green: #10B981; --red: #EF4444; --amber:#F59E0B; --purple:#8B5CF6;
+            --bg:      #F1F5FF; --surface: #FFFFFF; --surface2: #F8FAFF;
+            --text:    #0F172A; --muted: #64748B;
+            --border:  rgba(37,99,235,.10); --sw: 268px;
+        }
+        body.dark {
+            --bg: #060B14; --surface: #0D1526; --surface2: #111B2E;
+            --text: #E2E8F0; --muted: #7C8FA6; --border: rgba(255,255,255,.07);
+        }
+        *,*::before,*::after { box-sizing: border-box; margin:0; padding:0; }
+        body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text); transition:.35s; }
+
+        /* SIDEBAR */
+        .sidebar { width: var(--sw); height: 100vh; position: fixed; left:0; top:0; background: var(--navy); display:flex; flex-direction:column; z-index:200; overflow:hidden; }
+        .sidebar::before { content:''; position:absolute; inset:0; background: radial-gradient(circle at 20% 20%, rgba(37,99,235,.38) 0%, transparent 55%), radial-gradient(circle at 80% 85%, rgba(6,182,212,.18) 0%, transparent 55%); }
+        .sb-logo { padding:26px 22px 22px; border-bottom:1px solid rgba(255,255,255,.08); position:relative; z-index:1; display:flex; align-items:center; gap:13px; }
+        .sb-logo-icon { width:44px;height:44px;background:linear-gradient(135deg,var(--blue),var(--cyan));border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:21px;box-shadow:0 5px 18px rgba(37,99,235,.4); flex-shrink:0; }
+        .sb-logo h2 { color:#fff; font-size:14px; font-weight:800; }
+        .sb-logo span { color:rgba(255,255,255,.42); font-size:11px; text-transform:uppercase; letter-spacing:1px; }
+        .sb-nav { flex:1; padding:16px 12px; position:relative; z-index:1; }
+        .sb-label { color:rgba(255,255,255,.28); font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1.4px; padding:12px 10px 5px; }
+        .sidebar a { display:flex; align-items:center; gap:11px; padding:11px 12px; margin:2px 0; color:rgba(255,255,255,.62); text-decoration:none; border-radius:12px; font-size:14px; font-weight:500; transition:.22s; position:relative; }
+        .sidebar a:hover { color:#fff; background:rgba(255,255,255,.1); transform:translateX(3px); }
+        .sidebar a.active { color:#fff; background:linear-gradient(90deg,rgba(37,99,235,.45),rgba(37,99,235,.18)); }
+        .sidebar a.active::before { content:''; position:absolute; left:0; top:20%; height:60%; width:3px; background:var(--cyan); border-radius:0 3px 3px 0; }
+        .nav-icon { width:31px;height:31px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.08);border-radius:8px;font-size:15px; flex-shrink:0; }
+        .sidebar a:hover .nav-icon, .sidebar a.active .nav-icon { background:rgba(255,255,255,.18); }
+        .sb-footer { padding:12px 12px 18px; border-top:1px solid rgba(255,255,255,.07); position:relative; z-index:1; }
+
+        .main { margin-left: var(--sw); padding:26px 30px; min-height:100vh; }
+
+        .topbar { display:flex; align-items:center; justify-content:space-between; margin-bottom:22px; gap:12px; flex-wrap:wrap; }
+        .topbar-left { display:flex; align-items:center; gap: 14px; }
+        .back-btn {
+            width:40px;height:40px;border-radius:12px;
+            background:var(--surface); border:1.5px solid var(--border);
+            display:flex; align-items:center; justify-content:center;
+            text-decoration:none; color:var(--text); font-size:16px;
+            transition:.22s;
+        }
+        .back-btn:hover { background:var(--blue); color:#fff; border-color:var(--blue); transform:translateX(-3px); }
+        .topbar-left h1 { font-size:21px; font-weight:900; letter-spacing:-.4px; }
+        .topbar-left p { color:var(--muted); font-size:12px; }
+
+        .dark-toggle { background:var(--surface); border:1.5px solid var(--border); color:var(--text); padding:9px 15px; border-radius:11px; font-size:13px; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:7px; font-family:'Inter',sans-serif; transition:.22s; }
+        .dark-toggle:hover { border-color:var(--blue); color:var(--blue); transform:translateY(-2px); }
+
+        .card-glass { background:var(--surface); border:1px solid var(--border); border-radius:18px; box-shadow:0 4px 20px rgba(15,23,42,.07); }
+
+        /* ── PROFILE HERO ── */
+        .profile-hero {
+            border-radius:24px; padding:0; margin-bottom:22px;
+            background: linear-gradient(135deg, var(--navy) 0%, var(--blue2) 55%, #3B82F6 100%);
+            position:relative; overflow:hidden; color:#fff;
+        }
+        .profile-hero::before { content:''; position:absolute; width:280px;height:280px;border-radius:50%; background:rgba(255,255,255,.05); top:-100px;right:-60px; }
+        .profile-hero::after  { content:''; position:absolute; width:150px;height:150px;border-radius:50%; background:rgba(6,182,212,.14); bottom:-50px;right:140px; }
+
+        .profile-hero-inner {
+            position:relative; z-index:2;
+            display:flex; align-items:center; gap:26px;
+            padding: 36px 38px;
+            flex-wrap: wrap;
+        }
+
+        .profile-avatar {
+            width: 110px; height: 110px;
+            border-radius: 26px;
+            background: rgba(255,255,255,.12);
+            border: 3px solid rgba(255,255,255,.25);
+            display:flex; align-items:center; justify-content:center;
+            font-size: 46px;
+            overflow: hidden;
+            flex-shrink: 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,.2);
+        }
+        .profile-avatar img { width:100%; height:100%; object-fit:cover; }
+
+        .profile-hero-info h1 { font-size: 26px; font-weight: 900; letter-spacing:-.5px; }
+        .profile-hero-info .pcode { color: rgba(255,255,255,.6); font-size: 13px; font-weight:600; margin-top: 3px; }
+
+        .profile-tags { display:flex; gap:8px; margin-top: 12px; flex-wrap: wrap; }
+        .ptag {
+            background: rgba(255,255,255,.14);
+            backdrop-filter: blur(6px);
+            padding: 6px 14px; border-radius: 100px;
+            font-size: 12px; font-weight: 700;
+            display:flex; align-items:center; gap:6px;
+        }
+
+        .profile-hero-actions { margin-left: auto; display:flex; gap:10px; flex-shrink:0; }
+        .hero-btn {
+            padding: 11px 20px; border-radius: 12px;
+            font-size: 13px; font-weight: 700;
+            text-decoration: none;
+            display:flex; align-items:center; gap:7px;
+            transition: all .22s;
+            font-family: 'Inter', sans-serif;
+            border: none; cursor: pointer;
+        }
+        .hero-btn.edit { background: rgba(255,255,255,.16); color:#fff; border:1px solid rgba(255,255,255,.25); }
+        .hero-btn.edit:hover { background: rgba(255,255,255,.26); transform:translateY(-2px); color:#fff; }
+        .hero-btn.delete { background: rgba(239,68,68,.2); color:#FCA5A5; border:1px solid rgba(239,68,68,.3); }
+        .hero-btn.delete:hover { background: var(--red); color:#fff; transform:translateY(-2px); }
+
+        /* ── INFO GRID ── */
+        .info-section { padding: 26px 28px; margin-bottom: 20px; }
+        .info-section h5 {
+            font-size:12px; font-weight:800; color:var(--blue);
+            text-transform:uppercase; letter-spacing:.8px;
+            margin-bottom: 18px;
+            display:flex; align-items:center; gap:8px;
+            padding-bottom: 12px; border-bottom: 1px solid var(--border);
+        }
+
+        .info-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); gap: 18px; }
+        .info-item { }
+        .info-label { font-size: 11px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.6px; margin-bottom: 5px; }
+        .info-value { font-size: 15px; font-weight: 700; color: var(--text); }
+        .info-value.empty { color: var(--muted); font-weight:500; font-style:italic; font-size:13px; }
+
+        /* ── FILE CARD ── */
+        .file-card {
+            display:flex; align-items:center; gap:16px;
+            padding: 18px 20px;
+            background: var(--surface2);
+            border-radius: 16px;
+            border: 1px solid var(--border);
+        }
+        .file-icon {
+            width:52px;height:52px;border-radius:14px;
+            display:flex;align-items:center;justify-content:center;
+            font-size:24px; flex-shrink:0;
+        }
+        .file-name { font-size: 14px; font-weight:700; color:var(--text); word-break:break-all; }
+        .file-meta { font-size:12px; color:var(--muted); margin-top:2px; }
+
+        .badge-storage {
+            padding: 4px 11px; border-radius: 100px; font-size: 11px; font-weight: 700;
+            display: inline-flex; align-items:center; gap:4px; margin-top:6px;
+        }
+        .badge-local { background: rgba(16,185,129,.12); color: var(--green); }
+        .badge-cloud { background: rgba(6,182,212,.12); color: var(--cyan); }
+
+        .file-actions { margin-left:auto; display:flex; gap:8px; flex-shrink:0; }
+        .file-btn {
+            padding: 8px 16px; border-radius: 10px;
+            font-size: 12px; font-weight: 700;
+            text-decoration: none; transition: .2s;
+            display:flex; align-items:center; gap:5px;
+        }
+        .file-btn.preview { background: rgba(16,185,129,.1); color: var(--green); border:1.5px solid rgba(16,185,129,.2); }
+        .file-btn.preview:hover { background: var(--green); color:#fff; }
+        .file-btn.download { background: rgba(245,158,11,.1); color: var(--amber); border:1.5px solid rgba(245,158,11,.2); }
+        .file-btn.download:hover { background: var(--amber); color:#fff; }
+
+        /* compression stat mini bars */
+        .compress-stats { display:grid; grid-template-columns: repeat(3,1fr); gap:14px; margin-top: 16px; }
+        .cstat { text-align:center; padding: 14px; background:var(--surface2); border-radius:14px; border:1px solid var(--border); }
+        .cstat-val { font-size: 18px; font-weight: 900; color: var(--text); }
+        .cstat-label { font-size: 10px; color:var(--muted); font-weight:700; text-transform:uppercase; letter-spacing:.6px; margin-top:3px; }
+
+        @keyframes slideUp { from{opacity:0;transform:translateY(20px);} to{opacity:1;transform:translateY(0);} }
+        @keyframes fadeIn  { from{opacity:0;} to{opacity:1;} }
+        @keyframes scaleIn { from{opacity:0;transform:scale(.94);} to{opacity:1;transform:scale(1);} }
+        .au { animation: slideUp .5s ease both; }
+        .fi { animation: fadeIn .4s ease both; }
+        .sc { animation: scaleIn .45s ease both; }
+        .d1{animation-delay:.07s;} .d2{animation-delay:.14s;} .d3{animation-delay:.21s;}
+
+        @media (max-width: 960px) {
+            .main { margin-left:0; padding:18px; }
+            .sidebar { transform: translateX(-100%); }
+            .profile-hero-actions { margin-left:0; width:100%; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+    <div class="sb-logo">
+        <div class="sb-logo-icon">☁</div>
+        <div><h2>Smart Student</h2><span>Compression System</span></div>
+    </div>
+    <nav class="sb-nav">
+        <div class="sb-label">Main</div>
+        <a href="/dashboard"><span class="nav-icon">🏠</span> Dashboard</a>
+        <a href="/add_student"><span class="nav-icon">➕</span> Add Student</a>
+        <a href="/view_students" class="active"><span class="nav-icon">👨‍🎓</span> Students</a>
+        <div class="sb-label">Tools</div>
+        <a href="/analytics"><span class="nav-icon">📊</span> Analytics</a>
+        <a href="/export_pdf"><span class="nav-icon">📄</span> Reports</a>
+    </nav>
+    <div class="sb-footer">
+        <a href="/"><span class="nav-icon">🚪</span> Logout</a>
+    </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+
+    <div class="topbar fi">
+        <div class="topbar-left">
+            <a href="/view_students" class="back-btn">←</a>
+            <div>
+                <h1>Student Profile</h1>
+                <p>Full details and uploaded documents</p>
+            </div>
+        </div>
+        <button class="dark-toggle" onclick="toggleDark()">
+            <span id="darkIcon">🌙</span><span id="darkLabel">Dark Mode</span>
+        </button>
+    </div>
+
+    <!-- ═══ PROFILE HERO ═══ -->
+    <div class="profile-hero au">
+        <div class="profile-hero-inner">
+
+            <div class="profile-avatar">
+                {% if student[15] %}
+                    <img src="{{ url_for('static', filename='uploads/' + student[15]) }}" alt="profile">
+                {% else %}
+                    👤
+                {% endif %}
+            </div>
+
+            <div class="profile-hero-info">
+                <h1>{{ student[1] }}</h1>
+                <div class="pcode">
+                    {% if student[8] %}🆔 {{ student[8] }}{% else %}🆔 No ID assigned{% endif %}
+                </div>
+
+                <div class="profile-tags">
+                    <div class="ptag">📧 {{ student[2] }}</div>
+                    <div class="ptag">🎓 {{ student[3] }}</div>
+                    {% if student[14] %}<div class="ptag">📅 {{ student[14] }}</div>{% endif %}
+                </div>
+            </div>
+
+            <div class="profile-hero-actions">
+                <a href="/edit_student/{{ student[0] }}" class="hero-btn edit">✏️ Edit Profile</a>
+                <a href="/delete_student/{{ student[0] }}"
+                   class="hero-btn delete"
+                   onclick="return confirm('Delete this student permanently?')">🗑 Delete</a>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="row g-3">
+
+        <!-- LEFT COLUMN -->
+        <div class="col-lg-7">
+
+            <!-- Personal Info -->
+            <div class="card-glass info-section sc d1">
+                <h5>👤 Personal Information</h5>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">Full Name</div>
+                        <div class="info-value">{{ student[1] }}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Email</div>
+                        <div class="info-value">{{ student[2] }}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Phone</div>
+                        {% if student[9] %}
+                            <div class="info-value">{{ student[9] }}</div>
+                        {% else %}
+                            <div class="info-value empty">Not provided</div>
+                        {% endif %}
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Date of Birth</div>
+                        {% if student[11] %}
+                            <div class="info-value">{{ student[11] }}</div>
+                        {% else %}
+                            <div class="info-value empty">Not provided</div>
+                        {% endif %}
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Gender</div>
+                        {% if student[12] %}
+                            <div class="info-value">{{ student[12] }}</div>
+                        {% else %}
+                            <div class="info-value empty">Not provided</div>
+                        {% endif %}
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Address</div>
+                        {% if student[10] %}
+                            <div class="info-value">{{ student[10] }}</div>
+                        {% else %}
+                            <div class="info-value empty">Not provided</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Academic Info -->
+            <div class="card-glass info-section sc d2">
+                <h5>🎓 Academic Information</h5>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">Course</div>
+                        <div class="info-value">{{ student[3] }}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Year / Batch</div>
+                        {% if student[14] %}
+                            <div class="info-value">{{ student[14] }}</div>
+                        {% else %}
+                            <div class="info-value empty">Not assigned</div>
+                        {% endif %}
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Student ID</div>
+                        {% if student[8] %}
+                            <div class="info-value">{{ student[8] }}</div>
+                        {% else %}
+                            <div class="info-value empty">Not assigned</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Guardian Info -->
+            <div class="card-glass info-section sc d3">
+                <h5>👪 Guardian Information</h5>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">Guardian / Parent Name</div>
+                        {% if student[13] %}
+                            <div class="info-value">{{ student[13] }}</div>
+                        {% else %}
+                            <div class="info-value empty">Not provided</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- RIGHT COLUMN -->
+        <div class="col-lg-5">
+
+            <!-- Document -->
+            <div class="card-glass info-section sc d1">
+                <h5>📁 Uploaded Document</h5>
+
+                {% set extension = student[4].split('.')[-1].lower() %}
+
+                <div class="file-card">
+                    {% if extension in ['jpg','jpeg','png'] %}
+                        <div class="file-icon" style="background:rgba(139,92,246,.12);color:#8B5CF6;">🖼️</div>
+                    {% elif extension == 'pdf' %}
+                        <div class="file-icon" style="background:rgba(239,68,68,.12);color:#EF4444;">📕</div>
+                    {% else %}
+                        <div class="file-icon" style="background:rgba(37,99,235,.12);color:#2563EB;">📘</div>
+                    {% endif %}
+
+                    <div style="min-width:0;">
+                        <div class="file-name">{{ student[4] }}</div>
+                        <div class="file-meta">{{ student[6] }} bytes (compressed)</div>
+                        {% if student[7] == 'Cloud Storage' %}
+                            <span class="badge-storage badge-cloud">☁️ Cloud Storage</span>
+                        {% else %}
+                            <span class="badge-storage badge-local">💻 Local Storage</span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="file-actions mt-3" style="margin-left:0;">
+                    <a href="/preview/{{ student[4] }}" target="_blank" class="file-btn preview">👁 Preview</a>
+                    <a href="/download/{{ student[4] }}" class="file-btn download">⬇️ Download</a>
+                </div>
+
+                <div class="compress-stats">
+                    <div class="cstat">
+                        <div class="cstat-val">{{ student[5] }}</div>
+                        <div class="cstat-label">Original (B)</div>
+                    </div>
+                    <div class="cstat">
+                        <div class="cstat-val">{{ student[6] }}</div>
+                        <div class="cstat-label">Compressed (B)</div>
+                    </div>
+                    <div class="cstat">
+                        {% if student[5] and student[5] > 0 %}
+                        <div class="cstat-val" style="color:var(--green);">
+                            {{ ((student[5] - student[6]) / student[5] * 100) | round(1) }}%
+                        </div>
+                        {% else %}
+                        <div class="cstat-val">0%</div>
+                        {% endif %}
+                        <div class="cstat-label">Saved</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="card-glass info-section sc d2">
+                <h5>⚡ Quick Actions</h5>
+                <div class="d-grid gap-2">
+                    <a href="/edit_student/{{ student[0] }}" class="hero-btn edit" style="background:rgba(37,99,235,.1);color:var(--blue);border:1.5px solid rgba(37,99,235,.2);justify-content:center;">
+                        ✏️ Edit This Profile
+                    </a>
+                    <a href="/view_students" class="hero-btn edit" style="background:var(--surface2);color:var(--text);border:1.5px solid var(--border);justify-content:center;">
+                        📂 Back to All Students
+                    </a>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</main>
+
+<script>
+function toggleDark() {
+    document.body.classList.toggle('dark');
+    const on = document.body.classList.contains('dark');
+    document.getElementById('darkIcon').textContent  = on ? '☀️' : '🌙';
+    document.getElementById('darkLabel').textContent = on ? 'Light Mode' : 'Dark Mode';
+}
+</script>
+</body>
+</html>

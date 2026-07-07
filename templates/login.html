@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login — Smart Student</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --navy: #1E3A8A;
+            --blue: #2563EB;
+            --accent: #38BDF8;
+            --bg: #F0F4FF;
+            --surface: #FFFFFF;
+            --text: #1E293B;
+            --muted: #64748B;
+            --border: rgba(37,99,235,.12);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* background orbs */
+        body::before, body::after {
+            content: '';
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: 0;
+        }
+        body::before {
+            width: 500px; height: 500px;
+            background: rgba(37,99,235,.12);
+            top: -100px; left: -100px;
+        }
+        body::after {
+            width: 400px; height: 400px;
+            background: rgba(56,189,248,.1);
+            bottom: -80px; right: -80px;
+        }
+
+        .login-wrap {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 420px;
+            padding: 20px;
+            animation: slideUp .5s ease both;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .login-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 44px 40px;
+            box-shadow: 0 20px 60px rgba(37,99,235,.12);
+        }
+
+        .login-logo {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .login-logo .icon {
+            width: 64px; height: 64px;
+            background: linear-gradient(135deg, var(--navy), var(--blue));
+            border-radius: 20px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 30px;
+            margin: 0 auto 16px;
+            box-shadow: 0 8px 24px rgba(37,99,235,.3);
+        }
+
+        .login-logo h1 {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--text);
+        }
+
+        .login-logo p {
+            color: var(--muted);
+            font-size: 14px;
+            margin-top: 4px;
+        }
+
+        .form-group { margin-bottom: 18px; }
+
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: .6px;
+            margin-bottom: 8px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 13px 16px;
+            border: 1.5px solid var(--border);
+            border-radius: 12px;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            color: var(--text);
+            background: var(--bg);
+            transition: all .2s;
+        }
+
+        .form-group input:focus {
+            border-color: var(--blue);
+            box-shadow: 0 0 0 4px rgba(37,99,235,.1);
+            outline: none;
+            background: var(--surface);
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--navy), var(--blue));
+            color: #fff;
+            border: none;
+            border-radius: 13px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: all .25s;
+            box-shadow: 0 6px 20px rgba(37,99,235,.3);
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 28px rgba(37,99,235,.4);
+        }
+
+        .btn-login:active { transform: translateY(0); }
+    </style>
+</head>
+<body>
+    <div class="login-wrap">
+        <div class="login-card">
+            <div class="login-logo">
+                <div class="icon">☁</div>
+                <h1>Smart Student</h1>
+                <p>Compression System — Admin Login</p>
+            </div>
+
+            {% if error %}
+            <div style="background:#fee2e2;color:#b91c1c;padding:12px;border-radius:10px;margin-bottom:15px;">
+                 {{ error }}
+
+            </div>
+            {% endif %}
+
+            <form method="POST" action="/login">
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" name="username" placeholder="Enter username" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" name="password" placeholder="Enter password" required>
+                </div>
+                <button type="submit" class="btn-login">🔐 Login to Dashboard</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
