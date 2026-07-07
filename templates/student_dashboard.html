@@ -7,20 +7,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --navy:  #0F172A;
-            --blue:  #2563EB;
-            --blue2: #1D4ED8;
-            --cyan:  #06B6D4;
-            --green: #10B981;
-            --red:   #EF4444;
-            --amber: #F59E0B;
-            --purple:#8B5CF6;
-            --bg:    #F1F5FF;
-            --surface:#FFFFFF;
-            --surface2:#F8FAFF;
-            --text:  #0F172A;
-            --muted: #64748B;
-            --border:rgba(37,99,235,.10);
+            --navy:#0F172A; --blue:#2563EB; --blue2:#1D4ED8;
+            --cyan:#06B6D4; --green:#10B981; --red:#EF4444;
+            --amber:#F59E0B; --purple:#8B5CF6;
+            --bg:#F1F5FF; --surface:#FFFFFF; --surface2:#F8FAFF;
+            --text:#0F172A; --muted:#64748B; --border:rgba(37,99,235,.10);
         }
         body.dark {
             --bg:#060B14; --surface:#0D1526; --surface2:#111B2E;
@@ -29,166 +20,130 @@
         *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
         body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; transition:.3s; }
 
-        /* ── TOP NAV ── */
+        /* ══ TOPNAV ══ */
         .topnav {
-            background: var(--navy);
-            padding: 0 28px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            height: 62px;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 2px 20px rgba(0,0,0,.2);
+            background:var(--navy); height:60px;
+            display:flex; align-items:center; justify-content:space-between;
+            padding:0 28px; position:sticky; top:0; z-index:200;
+            box-shadow:0 2px 20px rgba(0,0,0,.25);
         }
         .topnav::before {
-            content:'';
-            position:absolute; inset:0;
-            background: radial-gradient(ellipse at 0% 50%, rgba(37,99,235,.3) 0%, transparent 60%);
-            pointer-events:none;
+            content:''; position:absolute; inset:0; pointer-events:none;
+            background:radial-gradient(ellipse at 0% 50%,rgba(37,99,235,.3) 0%,transparent 55%);
         }
-        .nav-brand {
-            display:flex; align-items:center; gap:12px; position:relative; z-index:1;
-        }
-        .nav-logo-icon {
-            width:36px; height:36px;
+        .nav-brand { display:flex; align-items:center; gap:11px; position:relative; z-index:1; }
+        .nav-logo {
+            width:36px; height:36px; border-radius:10px;
             background:linear-gradient(135deg,var(--blue),var(--cyan));
-            border-radius:10px;
-            display:flex; align-items:center; justify-content:center;
-            font-size:18px;
+            display:flex; align-items:center; justify-content:center; font-size:18px;
         }
         .nav-brand h1 { color:#fff; font-size:15px; font-weight:800; }
-        .nav-brand span { color:rgba(255,255,255,.45); font-size:11px; font-weight:500; }
-
-        .nav-right {
-            display:flex; align-items:center; gap:10px; position:relative; z-index:1;
-        }
-        .nav-user {
-            display:flex; align-items:center; gap:9px;
-            background:rgba(255,255,255,.1);
-            padding:7px 14px; border-radius:10px;
+        .nav-brand p  { color:rgba(255,255,255,.45); font-size:11px; }
+        .nav-right { display:flex; align-items:center; gap:9px; position:relative; z-index:1; }
+        .nav-chip {
+            display:flex; align-items:center; gap:8px;
+            background:rgba(255,255,255,.1); padding:6px 14px; border-radius:10px;
             color:#fff; font-size:13px; font-weight:600;
         }
-        .nav-user-avatar {
-            width:28px; height:28px; border-radius:8px;
+        .nav-chip-avatar {
+            width:26px; height:26px; border-radius:7px;
             background:linear-gradient(135deg,var(--blue),var(--cyan));
             display:flex; align-items:center; justify-content:center;
-            font-size:13px; font-weight:800; color:#fff;
+            font-size:12px; font-weight:800; color:#fff;
         }
-        .nav-btn {
-            padding:8px 16px; border-radius:10px;
-            font-size:13px; font-weight:700;
-            text-decoration:none; transition:.2s;
-            font-family:'Inter',sans-serif; border:none; cursor:pointer;
-            display:flex; align-items:center; gap:6px;
+        .nbtn {
+            padding:7px 15px; border-radius:10px; font-size:13px; font-weight:700;
+            text-decoration:none; border:none; cursor:pointer; font-family:'Inter',sans-serif;
+            display:flex; align-items:center; gap:6px; transition:.2s;
         }
-        .nav-btn.pw {
-            background:rgba(255,255,255,.12); color:#fff;
-            border:1px solid rgba(255,255,255,.2);
-        }
-        .nav-btn.pw:hover { background:rgba(255,255,255,.22); color:#fff; }
-        .nav-btn.logout {
-            background:rgba(239,68,68,.2); color:#FCA5A5;
-            border:1px solid rgba(239,68,68,.25);
-        }
-        .nav-btn.logout:hover { background:var(--red); color:#fff; }
-        .dark-toggle {
-            background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.15);
-            color:#fff; padding:8px 12px; border-radius:10px; font-size:13px;
-            cursor:pointer; font-family:'Inter',sans-serif; transition:.2s;
-        }
-        .dark-toggle:hover { background:rgba(255,255,255,.15); }
+        .nbtn-dark { background:rgba(255,255,255,.08); color:#fff; border:1px solid rgba(255,255,255,.15); }
+        .nbtn-dark:hover { background:rgba(255,255,255,.15); }
+        .nbtn-pw   { background:rgba(255,255,255,.12); color:#fff; border:1px solid rgba(255,255,255,.2); }
+        .nbtn-pw:hover { background:rgba(255,255,255,.22); color:#fff; }
+        .nbtn-out  { background:rgba(239,68,68,.2); color:#FCA5A5; border:1px solid rgba(239,68,68,.25); }
+        .nbtn-out:hover { background:var(--red); color:#fff; }
 
-        /* ── MAIN ── */
-        .main { max-width:1000px; margin:0 auto; padding:28px 20px; }
+        /* ══ LAYOUT ══ */
+        .wrap { max-width:1050px; margin:0 auto; padding:26px 20px; }
 
-        /* ── HERO ── */
+        /* ══ HERO ══ */
         .hero {
-            border-radius:24px;
+            border-radius:22px;
             background:linear-gradient(135deg,var(--navy) 0%,var(--blue2) 55%,#3B82F6 100%);
-            padding:32px 36px;
-            margin-bottom:24px;
-            color:#fff;
-            position:relative;
-            overflow:hidden;
+            padding:28px 32px; margin-bottom:24px; color:#fff;
+            position:relative; overflow:hidden;
         }
-        .hero::before {
-            content:''; position:absolute;
-            width:260px; height:260px; border-radius:50%;
-            background:rgba(255,255,255,.05); top:-80px; right:-60px;
-        }
-        .hero::after {
-            content:''; position:absolute;
-            width:140px; height:140px; border-radius:50%;
-            background:rgba(6,182,212,.14); bottom:-50px; right:120px;
-        }
-        .hero-inner {
-            position:relative; z-index:2;
-            display:flex; align-items:center; gap:22px; flex-wrap:wrap;
-        }
+        .hero::before { content:''; position:absolute; width:240px;height:240px;border-radius:50%; background:rgba(255,255,255,.05); top:-80px;right:-50px; }
+        .hero::after  { content:''; position:absolute; width:120px;height:120px;border-radius:50%; background:rgba(6,182,212,.14); bottom:-40px;right:130px; }
+        .hero-inner { position:relative;z-index:2; display:flex; align-items:center; gap:20px; flex-wrap:wrap; }
         .hero-avatar {
             width:80px; height:80px; border-radius:20px;
-            background:rgba(255,255,255,.15);
-            border:2.5px solid rgba(255,255,255,.25);
+            background:rgba(255,255,255,.15); border:2.5px solid rgba(255,255,255,.25);
             display:flex; align-items:center; justify-content:center;
-            font-size:36px; overflow:hidden; flex-shrink:0;
+            font-size:34px; overflow:hidden; flex-shrink:0;
         }
         .hero-avatar img { width:100%; height:100%; object-fit:cover; }
         .hero-info h1 { font-size:22px; font-weight:900; letter-spacing:-.4px; }
         .hero-info .sub { color:rgba(255,255,255,.65); font-size:13px; margin-top:3px; }
-        .hero-tags { display:flex; gap:8px; margin-top:12px; flex-wrap:wrap; }
-        .htag {
-            background:rgba(255,255,255,.14);
-            padding:5px 13px; border-radius:100px;
-            font-size:12px; font-weight:700;
-        }
-        .hero-welcome {
-            margin-left:auto; text-align:right; flex-shrink:0;
-        }
-        .hero-welcome .time {
-            font-size:22px; font-weight:900; letter-spacing:-.5px;
-        }
-        .hero-welcome .date {
-            color:rgba(255,255,255,.6); font-size:12px; margin-top:2px;
-        }
+        .hero-tags { display:flex; gap:7px; margin-top:10px; flex-wrap:wrap; }
+        .htag { background:rgba(255,255,255,.14); padding:5px 12px; border-radius:100px; font-size:12px; font-weight:700; }
+        .hero-clock { margin-left:auto; text-align:right; flex-shrink:0; }
+        .hero-clock .time { font-size:28px; font-weight:900; letter-spacing:-1px; }
+        .hero-clock .date { color:rgba(255,255,255,.6); font-size:12px; margin-top:1px; }
 
-        /* ── CARD ── */
+        /* ══ TABS ══ */
+        .tabs {
+            display:flex; gap:4px;
+            background:var(--surface); border:1px solid var(--border);
+            border-radius:16px; padding:5px; margin-bottom:22px;
+            box-shadow:0 2px 12px rgba(15,23,42,.05);
+        }
+        .tab {
+            flex:1; padding:10px 16px;
+            display:flex; align-items:center; justify-content:center; gap:7px;
+            border-radius:12px; font-size:13px; font-weight:700; cursor:pointer;
+            color:var(--muted); background:transparent;
+            border:none; font-family:'Inter',sans-serif; transition:.22s;
+        }
+        .tab:hover { color:var(--text); background:var(--surface2); }
+        .tab.active {
+            background:linear-gradient(135deg,var(--navy),var(--blue));
+            color:#fff;
+            box-shadow:0 4px 14px rgba(37,99,235,.3);
+        }
+        .tab-icon { font-size:16px; }
+
+        /* ══ TAB PAGES ══ */
+        .tab-page { display:none; }
+        .tab-page.active { display:block; animation:fadeIn .35s ease both; }
+        @keyframes fadeIn { from{opacity:0;transform:translateY(10px);} to{opacity:1;transform:translateY(0);} }
+
+        /* ══ CARD ══ */
         .card {
             background:var(--surface); border:1px solid var(--border);
-            border-radius:18px; box-shadow:0 4px 20px rgba(15,23,42,.07);
-            transition:transform .28s, box-shadow .28s;
+            border-radius:18px; box-shadow:0 4px 18px rgba(15,23,42,.07);
+            transition:transform .28s,box-shadow .28s; margin-bottom:18px;
         }
-        .card:hover { transform:translateY(-3px); box-shadow:0 10px 32px rgba(15,23,42,.11); }
-        .card-header {
-            padding:20px 24px 16px;
+        .card:hover { transform:translateY(-3px); box-shadow:0 10px 30px rgba(15,23,42,.1); }
+        .card-hdr {
+            padding:18px 22px 15px;
             border-bottom:1px solid var(--border);
             display:flex; align-items:center; gap:10px;
         }
-        .card-header h3 {
-            font-size:14px; font-weight:800; color:var(--text);
-            text-transform:uppercase; letter-spacing:.6px;
+        .card-hdr-icon {
+            width:33px; height:33px; border-radius:9px;
+            display:flex; align-items:center; justify-content:center; font-size:16px;
         }
-        .card-header-icon {
-            width:34px; height:34px; border-radius:10px;
-            display:flex; align-items:center; justify-content:center;
-            font-size:16px; flex-shrink:0;
-        }
-        .card-body { padding:22px 24px; }
+        .card-hdr h3 { font-size:13px; font-weight:800; text-transform:uppercase; letter-spacing:.6px; }
+        .card-body { padding:20px 22px; }
 
-        /* ── PROFILE GRID ── */
-        .info-grid {
-            display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:16px;
-        }
-        .info-item {}
-        .info-label {
-            font-size:10px; font-weight:700; color:var(--muted);
-            text-transform:uppercase; letter-spacing:.7px; margin-bottom:4px;
-        }
-        .info-value { font-size:14px; font-weight:700; color:var(--text); }
-        .info-value.empty { color:var(--muted); font-weight:500; font-style:italic; font-size:13px; }
+        /* ══ INFO GRID ══ */
+        .ig { display:grid; grid-template-columns:repeat(auto-fit,minmax(155px,1fr)); gap:16px; }
+        .ii-label { font-size:10px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.7px; margin-bottom:4px; }
+        .ii-value { font-size:14px; font-weight:700; color:var(--text); line-height:1.3; }
+        .ii-value.empty { color:var(--muted); font-weight:400; font-style:italic; font-size:13px; }
 
-        /* ── FILE CARD ── */
+        /* ══ FILE ITEM ══ */
         .file-item {
             display:flex; align-items:center; gap:14px;
             padding:14px 16px; border-radius:14px;
@@ -196,103 +151,93 @@
             margin-bottom:10px; transition:.2s;
         }
         .file-item:last-child { margin-bottom:0; }
-        .file-item:hover { border-color:var(--blue); background:rgba(37,99,235,.04); }
-        .file-icon {
-            width:44px; height:44px; border-radius:12px;
-            display:flex; align-items:center; justify-content:center;
-            font-size:20px; flex-shrink:0;
-        }
-        .file-name { font-size:13px; font-weight:700; color:var(--text); word-break:break-all; }
+        .file-item:hover { border-color:var(--blue); }
+        .file-icon { width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0; }
+        .file-name { font-size:13px; font-weight:700; word-break:break-all; }
         .file-meta { font-size:11px; color:var(--muted); margin-top:2px; }
         .file-actions { margin-left:auto; display:flex; gap:6px; flex-shrink:0; }
-        .fbtn {
-            padding:6px 13px; border-radius:9px;
-            font-size:11px; font-weight:700; font-family:'Inter',sans-serif;
-            cursor:pointer; text-decoration:none; transition:.2s;
+        .fa-btn {
+            padding:6px 12px; border-radius:9px; font-size:11px; font-weight:700;
+            font-family:'Inter',sans-serif; text-decoration:none; transition:.2s;
             display:flex; align-items:center; gap:4px;
         }
-        .fbtn-preview { background:rgba(16,185,129,.1); color:var(--green); border:1.5px solid rgba(16,185,129,.2); }
-        .fbtn-preview:hover { background:var(--green); color:#fff; }
-        .fbtn-download { background:rgba(245,158,11,.1); color:var(--amber); border:1.5px solid rgba(245,158,11,.2); }
-        .fbtn-download:hover { background:var(--amber); color:#fff; }
+        .fa-preview { background:rgba(16,185,129,.1);color:var(--green);border:1.5px solid rgba(16,185,129,.2); }
+        .fa-preview:hover { background:var(--green);color:#fff; }
+        .fa-download { background:rgba(245,158,11,.1);color:var(--amber);border:1.5px solid rgba(245,158,11,.2); }
+        .fa-download:hover { background:var(--amber);color:#fff; }
 
-        /* ── STORAGE BAR ── */
-        .storage-stat {
-            display:flex; align-items:center; gap:14px;
-            padding:14px 16px; border-radius:14px;
+        /* ══ STAT PILLS ══ */
+        .stat-row { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:18px; }
+        .stat-pill {
             background:var(--surface2); border:1px solid var(--border);
-            margin-bottom:10px;
+            border-radius:16px; padding:18px 16px; text-align:center;
         }
-        .storage-stat-icon {
-            width:40px; height:40px; border-radius:11px;
-            display:flex; align-items:center; justify-content:center;
-            font-size:18px; flex-shrink:0;
-        }
-        .storage-stat-label { font-size:12px; font-weight:700; color:var(--muted); margin-bottom:4px; }
-        .storage-stat-val { font-size:18px; font-weight:900; color:var(--text); letter-spacing:-.5px; }
-        .prog-wrap { margin-top:8px; }
-        .prog-track { height:6px; background:rgba(37,99,235,.08); border-radius:100px; overflow:hidden; }
+        .stat-pill-val { font-size:22px; font-weight:900; letter-spacing:-.5px; color:var(--text); }
+        .stat-pill-label { font-size:11px; color:var(--muted); font-weight:700; text-transform:uppercase; letter-spacing:.6px; margin-top:4px; }
+
+        /* ══ PROGRESS ══ */
+        .prog-row { display:flex; justify-content:space-between; font-size:11px; font-weight:700; color:var(--muted); margin-bottom:5px; }
+        .prog-track { height:8px; background:rgba(37,99,235,.08); border-radius:100px; overflow:hidden; }
         .prog-fill { height:100%; border-radius:100px; background:linear-gradient(90deg,var(--blue),var(--cyan)); width:0%; transition:width 1.2s cubic-bezier(.4,0,.2,1); }
 
-        /* ── EMPTY STATE ── */
-        .empty-state {
-            text-align:center; padding:36px;
-            color:var(--muted);
-        }
-        .empty-state .empty-icon { font-size:44px; margin-bottom:12px; display:block; }
-        .empty-state p { font-size:14px; font-weight:600; }
+        /* ══ BADGE ══ */
+        .badge { display:inline-flex;align-items:center;gap:4px;padding:4px 11px;border-radius:100px;font-size:11px;font-weight:700; }
+        .b-local { background:rgba(16,185,129,.12);color:var(--green); }
+        .b-cloud { background:rgba(6,182,212,.12);color:var(--cyan); }
+        .b-student { background:rgba(37,99,235,.1);color:var(--blue); }
 
-        /* ── BADGE ── */
-        .badge {
-            display:inline-flex; align-items:center; gap:4px;
-            padding:4px 11px; border-radius:100px; font-size:11px; font-weight:700;
-        }
-        .badge-local { background:rgba(16,185,129,.12); color:var(--green); }
-        .badge-cloud { background:rgba(6,182,212,.12); color:var(--cyan); }
-
-        /* ── ANIMATIONS ── */
-        @keyframes slideUp { from{opacity:0;transform:translateY(18px);} to{opacity:1;transform:translateY(0);} }
-        @keyframes fadeIn  { from{opacity:0;} to{opacity:1;} }
-        .au { animation:slideUp .48s ease both; }
-        .fi { animation:fadeIn .4s ease both; }
-        .d1{animation-delay:.06s;} .d2{animation-delay:.12s;} .d3{animation-delay:.18s;} .d4{animation-delay:.24s;}
-
-        /* ── RESTRICTED BADGE ── */
-        .restricted-note {
+        /* ══ ALERT ══ */
+        .alert-info {
             display:flex; align-items:center; gap:10px;
-            background:rgba(37,99,235,.06); border:1px solid rgba(37,99,235,.15);
-            border-radius:12px; padding:12px 16px;
+            background:rgba(37,99,235,.06); border:1px solid rgba(37,99,235,.14);
+            border-radius:13px; padding:13px 16px;
             font-size:13px; color:var(--muted); font-weight:500;
+        }
+
+        /* ══ NO PROFILE ══ */
+        .no-profile {
+            text-align:center; padding:48px 20px;
+        }
+        .no-profile .icon { font-size:52px; display:block; margin-bottom:14px; }
+        .no-profile h3 { font-size:18px; font-weight:800; margin-bottom:6px; }
+        .no-profile p { font-size:14px; color:var(--muted); }
+
+        /* ══ ANIMS ══ */
+        @keyframes slideUp { from{opacity:0;transform:translateY(18px);} to{opacity:1;transform:translateY(0);} }
+        .au{animation:slideUp .48s ease both;}
+        .d1{animation-delay:.07s;} .d2{animation-delay:.14s;} .d3{animation-delay:.21s;}
+
+        @media(max-width:700px) {
+            .stat-row { grid-template-columns:1fr 1fr; }
+            .tabs { flex-wrap:wrap; }
+            .tab { flex:none; width:calc(50% - 4px); }
         }
     </style>
 </head>
 <body>
 
-<!-- ══ TOP NAV ══ -->
-<nav class="topnav fi">
+<!-- TOPNAV -->
+<nav class="topnav">
     <div class="nav-brand">
-        <div class="nav-logo-icon">☁</div>
+        <div class="nav-logo">☁</div>
         <div>
             <h1>Smart Student</h1>
-            <span>Student Portal</span>
+            <p>Student Portal</p>
         </div>
     </div>
-
     <div class="nav-right">
-        <div class="nav-user">
-            <div class="nav-user-avatar">{{ username[0]|upper if username else '?' }}</div>
+        <div class="nav-chip">
+            <div class="nav-chip-avatar">{{ username[0]|upper if username else '?' }}</div>
             {{ username }}
+            <span class="badge b-student" style="margin-left:4px;">Student</span>
         </div>
-        <button class="dark-toggle" onclick="toggleDark()">
-            <span id="di">🌙</span>
-        </button>
-        <a href="/change_password" class="nav-btn pw">🔑 Password</a>
-        <a href="/logout" class="nav-btn logout">🚪 Logout</a>
+        <button class="nbtn nbtn-dark" onclick="toggleDark()"><span id="di">🌙</span></button>
+        <a href="/change_password" class="nbtn nbtn-pw">🔑 Password</a>
+        <a href="/logout" class="nbtn nbtn-out">🚪 Logout</a>
     </div>
 </nav>
 
-<!-- ══ MAIN ══ -->
-<div class="main">
+<div class="wrap">
 
     <!-- HERO -->
     <div class="hero au">
@@ -304,288 +249,392 @@
                     👤
                 {% endif %}
             </div>
-
             <div class="hero-info">
                 <h1>
-                    {% if student %}
-                        {{ student[1] }}
-                    {% else %}
-                        Welcome, {{ username }}!
-                    {% endif %}
+                    {% if student %}Welcome, {{ student[1] }}!
+                    {% else %}Welcome, {{ username }}!{% endif %}
                 </h1>
                 <div class="sub">
-                    {% if student %}
-                        {{ student[2] }} &nbsp;·&nbsp; {{ student[3] }}
-                    {% else %}
-                        Student Portal
-                    {% endif %}
+                    {% if student %}{{ student[2] }} &nbsp;·&nbsp; {{ student[3] }}
+                    {% else %}Student Portal{% endif %}
                 </div>
                 <div class="hero-tags">
-                    {% if student and student[8] %}
-                        <div class="htag">🆔 {{ student[8] }}</div>
-                    {% endif %}
-                    {% if student and student[14] %}
-                        <div class="htag">📅 {{ student[14] }}</div>
-                    {% endif %}
+                    {% if student and student[8] %}<div class="htag">🆔 {{ student[8] }}</div>{% endif %}
+                    {% if student and student[14] %}<div class="htag">📅 {{ student[14] }}</div>{% endif %}
                     <div class="htag">👤 Student</div>
                 </div>
             </div>
-
-            <div class="hero-welcome">
+            <div class="hero-clock">
                 <div class="time" id="clock">—</div>
-                <div class="date" id="dateDisp">—</div>
+                <div class="date" id="dateD">—</div>
             </div>
         </div>
     </div>
 
     {% if not student %}
-    <!-- No profile linked -->
-    <div class="card au d1" style="margin-bottom:20px;">
+    <!-- NO PROFILE LINKED -->
+    <div class="card au d1">
         <div class="card-body">
-            <div class="empty-state">
-                <span class="empty-icon">📋</span>
-                <p>Your student profile has not been set up yet.</p>
-                <p style="font-size:12px;margin-top:6px;">Please contact your admin to link your account.</p>
+            <div class="no-profile">
+                <span class="icon">📋</span>
+                <h3>Profile Not Linked Yet</h3>
+                <p>Your account has not been linked to a student profile.<br>
+                   Please contact your admin — they can link your account from the Users page.</p>
             </div>
         </div>
     </div>
 
     {% else %}
 
-    <div class="row" style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+    <!-- TABS -->
+    <div class="tabs au d1">
+        <button class="tab active" onclick="showTab('profile',this)">
+            <span class="tab-icon">👤</span> My Profile
+        </button>
+        <button class="tab" onclick="showTab('academic',this)">
+            <span class="tab-icon">🎓</span> Academic
+        </button>
+        <button class="tab" onclick="showTab('files',this)">
+            <span class="tab-icon">📁</span> My Files
+        </button>
+        <button class="tab" onclick="showTab('storage',this)">
+            <span class="tab-icon">💾</span> Storage
+        </button>
+    </div>
 
-        <!-- LEFT: Profile Info -->
-        <div>
+    <!-- ══ TAB: PROFILE ══ -->
+    <div class="tab-page active" id="tab-profile">
 
-            <!-- Personal Details -->
-            <div class="card au d1" style="margin-bottom:20px;">
-                <div class="card-header">
-                    <div class="card-header-icon" style="background:rgba(37,99,235,.1);">👤</div>
-                    <h3>Personal Details</h3>
-                </div>
-                <div class="card-body">
-                    <div class="info-grid">
-                        <div class="info-item">
-                            <div class="info-label">Full Name</div>
-                            <div class="info-value">{{ student[1] }}</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">Email</div>
-                            <div class="info-value" style="font-size:13px;">{{ student[2] }}</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">Phone</div>
-                            {% if student[9] %}
-                                <div class="info-value">{{ student[9] }}</div>
-                            {% else %}
-                                <div class="info-value empty">Not set</div>
-                            {% endif %}
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">Date of Birth</div>
-                            {% if student[11] %}
-                                <div class="info-value">{{ student[11] }}</div>
-                            {% else %}
-                                <div class="info-value empty">Not set</div>
-                            {% endif %}
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">Gender</div>
-                            {% if student[12] %}
-                                <div class="info-value">{{ student[12] }}</div>
-                            {% else %}
-                                <div class="info-value empty">Not set</div>
-                            {% endif %}
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">Address</div>
-                            {% if student[10] %}
-                                <div class="info-value" style="font-size:13px;">{{ student[10] }}</div>
-                            {% else %}
-                                <div class="info-value empty">Not set</div>
-                            {% endif %}
-                        </div>
+        <div class="card au d2">
+            <div class="card-hdr">
+                <div class="card-hdr-icon" style="background:rgba(37,99,235,.1);">👤</div>
+                <h3>Personal Information</h3>
+            </div>
+            <div class="card-body">
+                <div class="ig">
+                    <div>
+                        <div class="ii-label">Full Name</div>
+                        <div class="ii-value">{{ student[1] }}</div>
+                    </div>
+                    <div>
+                        <div class="ii-label">Email Address</div>
+                        <div class="ii-value">{{ student[2] }}</div>
+                    </div>
+                    <div>
+                        <div class="ii-label">Phone Number</div>
+                        {% if student[9] %}
+                        <div class="ii-value">{{ student[9] }}</div>
+                        {% else %}
+                        <div class="ii-value empty">Not provided</div>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <div class="ii-label">Date of Birth</div>
+                        {% if student[11] %}
+                        <div class="ii-value">{{ student[11] }}</div>
+                        {% else %}
+                        <div class="ii-value empty">Not provided</div>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <div class="ii-label">Gender</div>
+                        {% if student[12] %}
+                        <div class="ii-value">{{ student[12] }}</div>
+                        {% else %}
+                        <div class="ii-value empty">Not provided</div>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <div class="ii-label">Address</div>
+                        {% if student[10] %}
+                        <div class="ii-value">{{ student[10] }}</div>
+                        {% else %}
+                        <div class="ii-value empty">Not provided</div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
-
-            <!-- Academic Details -->
-            <div class="card au d2" style="margin-bottom:20px;">
-                <div class="card-header">
-                    <div class="card-header-icon" style="background:rgba(16,185,129,.1);">🎓</div>
-                    <h3>Academic Details</h3>
-                </div>
-                <div class="card-body">
-                    <div class="info-grid">
-                        <div class="info-item">
-                            <div class="info-label">Course</div>
-                            <div class="info-value">{{ student[3] }}</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">Student ID</div>
-                            {% if student[8] %}
-                                <div class="info-value">{{ student[8] }}</div>
-                            {% else %}
-                                <div class="info-value empty">Not assigned</div>
-                            {% endif %}
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">Year / Batch</div>
-                            {% if student[14] %}
-                                <div class="info-value">{{ student[14] }}</div>
-                            {% else %}
-                                <div class="info-value empty">Not assigned</div>
-                            {% endif %}
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">Guardian</div>
-                            {% if student[13] %}
-                                <div class="info-value">{{ student[13] }}</div>
-                            {% else %}
-                                <div class="info-value empty">Not set</div>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- What student CANNOT see -->
-            <div class="restricted-note au d3">
-                🔒 Admin-only features (full student list, analytics, reports) are not accessible from this account.
-            </div>
-
         </div>
 
-        <!-- RIGHT: Storage + Files -->
-        <div>
-
-            <!-- Storage Stats -->
-            <div class="card au d1" style="margin-bottom:20px;">
-                <div class="card-header">
-                    <div class="card-header-icon" style="background:rgba(6,182,212,.1);">💾</div>
-                    <h3>My Storage</h3>
+        <div class="card au d3">
+            <div class="card-hdr">
+                <div class="card-hdr-icon" style="background:rgba(16,185,129,.1);">👪</div>
+                <h3>Guardian Information</h3>
+            </div>
+            <div class="card-body">
+                <div class="ig">
+                    <div>
+                        <div class="ii-label">Guardian / Parent Name</div>
+                        {% if student[13] %}
+                        <div class="ii-value">{{ student[13] }}</div>
+                        {% else %}
+                        <div class="ii-value empty">Not provided</div>
+                        {% endif %}
+                    </div>
                 </div>
-                <div class="card-body">
+            </div>
+        </div>
 
-                    <div class="storage-stat">
-                        <div class="storage-stat-icon" style="background:rgba(37,99,235,.1);">📦</div>
-                        <div style="flex:1;">
-                            <div class="storage-stat-label">Original Size</div>
-                            <div class="storage-stat-val">{{ student[5] }} <span style="font-size:12px;font-weight:600;color:var(--muted);">bytes</span></div>
-                        </div>
+        <div class="alert-info au d3">
+            🔒 To update your personal details, please contact your admin.
+        </div>
+
+    </div>
+
+    <!-- ══ TAB: ACADEMIC ══ -->
+    <div class="tab-page" id="tab-academic">
+
+        <div class="card">
+            <div class="card-hdr">
+                <div class="card-hdr-icon" style="background:rgba(139,92,246,.1);">🎓</div>
+                <h3>Academic Details</h3>
+            </div>
+            <div class="card-body">
+                <div class="ig">
+                    <div>
+                        <div class="ii-label">Course</div>
+                        <div class="ii-value">{{ student[3] }}</div>
                     </div>
-
-                    <div class="storage-stat">
-                        <div class="storage-stat-icon" style="background:rgba(16,185,129,.1);">⚡</div>
-                        <div style="flex:1;">
-                            <div class="storage-stat-label">Compressed Size</div>
-                            <div class="storage-stat-val" style="color:var(--green);">{{ student[6] }} <span style="font-size:12px;font-weight:600;color:var(--muted);">bytes</span></div>
-                            {% if student[5] and student[5] > 0 %}
-                            <div class="prog-wrap">
-                                <div class="prog-track">
-                                    <div class="prog-fill" id="progFill"></div>
-                                </div>
-                                <div style="font-size:11px;color:var(--green);font-weight:700;margin-top:4px;">
-                                    {{ ((student[5]-student[6])/student[5]*100)|round(1) }}% saved
-                                </div>
-                            </div>
-                            {% endif %}
-                        </div>
+                    <div>
+                        <div class="ii-label">Student ID</div>
+                        {% if student[8] %}
+                        <div class="ii-value">{{ student[8] }}</div>
+                        {% else %}
+                        <div class="ii-value empty">Not assigned</div>
+                        {% endif %}
                     </div>
+                    <div>
+                        <div class="ii-label">Year / Batch</div>
+                        {% if student[14] %}
+                        <div class="ii-value">{{ student[14] }}</div>
+                        {% else %}
+                        <div class="ii-value empty">Not assigned</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
 
-                    <div class="storage-stat">
-                        <div class="storage-stat-icon"
-                             style="background:{% if student[7]=='Cloud Storage' %}rgba(6,182,212,.1){% else %}rgba(16,185,129,.1){% endif %};">
-                            {% if student[7] == 'Cloud Storage' %}☁️{% else %}💻{% endif %}
+        <div class="card">
+            <div class="card-hdr">
+                <div class="card-hdr-icon" style="background:rgba(6,182,212,.1);">📊</div>
+                <h3>Compression Summary</h3>
+            </div>
+            <div class="card-body">
+                <div class="stat-row">
+                    <div class="stat-pill">
+                        <div class="stat-pill-val">{{ student[5] }}</div>
+                        <div class="stat-pill-label">Original (B)</div>
+                    </div>
+                    <div class="stat-pill">
+                        <div class="stat-pill-val" style="color:var(--green);">{{ student[6] }}</div>
+                        <div class="stat-pill-label">Compressed (B)</div>
+                    </div>
+                    <div class="stat-pill">
+                        {% if student[5] and student[5]|int > 0 %}
+                        <div class="stat-pill-val" style="color:var(--cyan);">
+                            {{ ((student[5]|int - student[6]|int) / student[5]|int * 100)|round(1) }}%
                         </div>
-                        <div>
-                            <div class="storage-stat-label">Storage Location</div>
-                            <div class="storage-stat-val" style="font-size:15px;">
-                                {% if student[7] == 'Cloud Storage' %}
-                                    <span class="badge badge-cloud">☁️ Cloud Storage</span>
+                        {% else %}
+                        <div class="stat-pill-val">0%</div>
+                        {% endif %}
+                        <div class="stat-pill-label">Saved</div>
+                    </div>
+                </div>
+
+                {% if student[5] and student[5]|int > 0 %}
+                <div class="prog-row">
+                    <span>Compression efficiency</span>
+                    <span id="pctLabel">—</span>
+                </div>
+                <div class="prog-track">
+                    <div class="prog-fill" id="progFill"></div>
+                </div>
+                {% endif %}
+
+                <div style="margin-top:14px;">
+                    <div class="ii-label">Storage Type</div>
+                    <div style="margin-top:5px;">
+                        {% if student[7] == 'Cloud Storage' %}
+                        <span class="badge b-cloud">☁️ Cloud Storage (AWS S3)</span>
+                        {% else %}
+                        <span class="badge b-local">💻 Local Storage</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ══ TAB: FILES ══ -->
+    <div class="tab-page" id="tab-files">
+
+        <div class="card">
+            <div class="card-hdr">
+                <div class="card-hdr-icon" style="background:rgba(245,158,11,.1);">📁</div>
+                <h3>My Uploaded Files</h3>
+            </div>
+            <div class="card-body">
+
+                {% if files %}
+                    {% for f in files %}
+                    {% set ext = f[4].split('.')[-1].lower() %}
+                    <div class="file-item">
+                        {% if ext in ['jpg','jpeg','png'] %}
+                            <div class="file-icon" style="background:rgba(139,92,246,.1);">🖼️</div>
+                        {% elif ext == 'pdf' %}
+                            <div class="file-icon" style="background:rgba(239,68,68,.1);">📕</div>
+                        {% else %}
+                            <div class="file-icon" style="background:rgba(37,99,235,.1);">📘</div>
+                        {% endif %}
+                        <div style="min-width:0;flex:1;">
+                            <div class="file-name">{{ f[4] }}</div>
+                            <div class="file-meta">
+                                {{ f[6] }} bytes compressed &nbsp;·&nbsp;
+                                {% if f[7]=='Cloud Storage' %}
+                                <span class="badge b-cloud" style="font-size:10px;">☁️ Cloud</span>
                                 {% else %}
-                                    <span class="badge badge-local">💻 Local Storage</span>
+                                <span class="badge b-local" style="font-size:10px;">💻 Local</span>
                                 {% endif %}
                             </div>
                         </div>
+                        <div class="file-actions">
+                            <a href="/preview/{{ f[4] }}" target="_blank" class="fa-btn fa-preview">👁 View</a>
+                            <a href="/download/{{ f[4] }}" class="fa-btn fa-download">⬇️ Save</a>
+                        </div>
                     </div>
+                    {% endfor %}
+                {% else %}
+                    <div style="text-align:center;padding:36px;color:var(--muted);">
+                        <div style="font-size:44px;margin-bottom:12px;">📂</div>
+                        <p style="font-weight:600;">No files uploaded yet.</p>
+                    </div>
+                {% endif %}
 
-                </div>
             </div>
+        </div>
 
-            <!-- My Files -->
-            <div class="card au d2">
-                <div class="card-header">
-                    <div class="card-header-icon" style="background:rgba(139,92,246,.1);">📁</div>
-                    <h3>My Files</h3>
+    </div>
+
+    <!-- ══ TAB: STORAGE ══ -->
+    <div class="tab-page" id="tab-storage">
+
+        <div class="stat-row" style="margin-bottom:18px;">
+            <div class="stat-pill">
+                <div class="stat-pill-val">{{ student[5] }}</div>
+                <div class="stat-pill-label">Original (B)</div>
+            </div>
+            <div class="stat-pill">
+                <div class="stat-pill-val" style="color:var(--green);">{{ student[6] }}</div>
+                <div class="stat-pill-label">Compressed (B)</div>
+            </div>
+            <div class="stat-pill">
+                {% if student[5] and student[5]|int > 0 %}
+                <div class="stat-pill-val" style="color:var(--cyan);">
+                    {{ ((student[5]|int - student[6]|int) / student[5]|int * 100)|round(1) }}%
                 </div>
-                <div class="card-body">
+                {% else %}
+                <div class="stat-pill-val">0%</div>
+                {% endif %}
+                <div class="stat-pill-label">Space Saved</div>
+            </div>
+        </div>
 
-                    {% if files %}
-                        {% for f in files %}
-                        {% set ext = f[4].split('.')[-1].lower() %}
-                        <div class="file-item">
-                            {% if ext in ['jpg','jpeg','png'] %}
-                                <div class="file-icon" style="background:rgba(139,92,246,.1);">🖼️</div>
-                            {% elif ext == 'pdf' %}
-                                <div class="file-icon" style="background:rgba(239,68,68,.1);">📕</div>
-                            {% else %}
-                                <div class="file-icon" style="background:rgba(37,99,235,.1);">📘</div>
-                            {% endif %}
+        <div class="card">
+            <div class="card-hdr">
+                <div class="card-hdr-icon" style="background:rgba(37,99,235,.1);">💾</div>
+                <h3>Storage Details</h3>
+            </div>
+            <div class="card-body">
 
-                            <div style="min-width:0;flex:1;">
-                                <div class="file-name">{{ f[4] }}</div>
-                                <div class="file-meta">{{ f[6] }} bytes (compressed)</div>
-                            </div>
+                <div style="margin-bottom:18px;">
+                    <div class="prog-row">
+                        <span>Original size</span>
+                        <span>{{ student[5] }} B</span>
+                    </div>
+                    <div class="prog-track" style="height:10px;">
+                        <div style="height:100%;width:100%;background:rgba(37,99,235,.3);border-radius:100px;"></div>
+                    </div>
+                </div>
 
-                            <div class="file-actions">
-                                <a href="/preview/{{ f[4] }}" target="_blank" class="fbtn fbtn-preview">👁</a>
-                                <a href="/download/{{ f[4] }}" class="fbtn fbtn-download">⬇️</a>
-                            </div>
-                        </div>
-                        {% endfor %}
+                <div style="margin-bottom:18px;">
+                    <div class="prog-row">
+                        <span>Compressed size</span>
+                        <span>{{ student[6] }} B</span>
+                    </div>
+                    <div class="prog-track" style="height:10px;">
+                        {% if student[5] and student[5]|int > 0 %}
+                        <div class="prog-fill" id="compBar"
+                             style="background:linear-gradient(90deg,var(--green),#34D399);"></div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div style="background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:16px 18px;margin-top:6px;">
+                    <div class="ii-label">Storage Location</div>
+                    <div style="margin-top:7px;font-size:15px;font-weight:700;">
+                        {% if student[7] == 'Cloud Storage' %}
+                        ☁️ Cloud Storage — AWS S3
+                        {% else %}
+                        💻 Local Server Storage
+                        {% endif %}
+                    </div>
+                    {% if student[7] == 'Cloud Storage' %}
+                    <div style="font-size:12px;color:var(--muted);margin-top:4px;">Your file is securely stored on Amazon Web Services S3.</div>
                     {% else %}
-                        <div class="empty-state">
-                            <span class="empty-icon">📂</span>
-                            <p>No files uploaded yet.</p>
-                        </div>
+                    <div style="font-size:12px;color:var(--muted);margin-top:4px;">Your file is stored on the institution's local server.</div>
                     {% endif %}
-
                 </div>
-            </div>
 
+            </div>
+        </div>
+
+        <div class="alert-info">
+            ℹ️ Compression is handled automatically by the system. Large files (over 5MB) are stored on cloud storage.
         </div>
 
     </div>
 
     {% endif %}
 
-</div>
+</div><!-- /wrap -->
 
 <script>
+/* Clock */
+function tick(){
+    const n=new Date();
+    document.getElementById('clock').textContent=n.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+    document.getElementById('dateD').textContent=n.toLocaleDateString([],{weekday:'short',month:'short',day:'numeric'});
+}
+tick(); setInterval(tick,1000);
+
+/* Dark mode */
 function toggleDark(){
     document.body.classList.toggle('dark');
-    document.getElementById('di').textContent =
-        document.body.classList.contains('dark') ? '☀️' : '🌙';
+    document.getElementById('di').textContent=document.body.classList.contains('dark')?'☀️':'🌙';
 }
 
-function updateClock(){
-    const now = new Date();
-    document.getElementById('clock').textContent =
-        now.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
-    document.getElementById('dateDisp').textContent =
-        now.toLocaleDateString([],{weekday:'short',month:'short',day:'numeric'});
+/* Tabs */
+function showTab(name, btn){
+    document.querySelectorAll('.tab-page').forEach(p=>p.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+    document.getElementById('tab-'+name).classList.add('active');
+    btn.classList.add('active');
 }
-updateClock();
-setInterval(updateClock, 1000);
 
-// Progress bar
-{% if student and student[5] and student[5] > 0 %}
-setTimeout(() => {
-    const pct = {{ ((student[5]-student[6])/student[5]*100)|round(1) }};
-    const el  = document.getElementById('progFill');
-    if (el) el.style.width = Math.min(pct, 100) + '%';
-}, 600);
+/* Progress bars */
+{% if student and student[5] and student[5]|int > 0 %}
+const pct = {{ ((student[5]|int - student[6]|int) / student[5]|int * 100)|round(1) }};
+const compPct = {{ (student[6]|int / student[5]|int * 100)|round(1) }};
+setTimeout(()=>{
+    const f1=document.getElementById('progFill');
+    const f2=document.getElementById('compBar');
+    const lb=document.getElementById('pctLabel');
+    if(f1){ f1.style.width=Math.min(pct,100)+'%'; }
+    if(f2){ f2.style.width=Math.min(compPct,100)+'%'; }
+    if(lb){ lb.textContent=pct+'%'; }
+},600);
 {% endif %}
 </script>
 </body>
