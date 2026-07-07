@@ -359,12 +359,15 @@ def student_dashboard():
     cursor.execute("""
         SELECT *
         FROM students
-        WHERE name=%s
+        WHERE username=%s
     """, [username])
 
     student = cursor.fetchone()
 
-    files = []
+    if student:
+        files = [student]
+    else:
+        files = []
 
     cursor.close()
 
