@@ -614,17 +614,38 @@ def edit_student(id):
         name = request.form['name']
         email = request.form['email']
         course = request.form['course']
+        student_code = request.form['student_code']
+        phone = request.form['phone']
+        address = request.form['address']
+        dob = request.form['dob']
+        gender = request.form['gender']
+        guardian_name = request.form['guardian_name']
+        batch = request.form['batch']
 
         cursor.execute("""
             UPDATE students
             SET name=%s,
                 email=%s,
                 course=%s
+                student_code=%s,
+                phone=%s,
+                address=%s,
+                dob=%s,
+                gender=%s,
+                guardian_name=%s,
+                batch=%s       
             WHERE id=%s
         """, (
             name,
             email,
             course,
+            student_code,
+            phone,
+            address,
+            dob,
+            gender,
+            guardian_name,
+            batch,
             id
         ))
 
@@ -632,7 +653,7 @@ def edit_student(id):
 
         cursor.close()
 
-        return redirect('/view_students')
+        return redirect('/student_profile/' + str(id))
 
     # Get Student Data
     cursor.execute(
@@ -1168,6 +1189,19 @@ def debug_student():
     cursor.close()
 
     return str(data)
+
+@app.route('/students_columns')
+def students_columns():
+
+    cursor = mysql.connection.cursor()
+
+    cursor.execute("SHOW COLUMNS FROM students")
+
+    columns = cursor.fetchall()
+
+    cursor.close()
+
+    return "<br>".join([str(c) for c in columns])
 
 
 
