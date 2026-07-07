@@ -1169,6 +1169,22 @@ def debug_student():
 
     return str(data)
 
+    @app.route('/students_db')
+def students_db():
+
+    cursor = mysql.connection.cursor()
+
+    cursor.execute("""
+        SELECT *
+        FROM students
+    """)
+
+    students = cursor.fetchall()
+
+    cursor.close()
+
+    return str(students)
+
 
 # =========================================
 # Run App
