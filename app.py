@@ -1020,8 +1020,16 @@ def activity_log():
 @app.route('/change_password', methods=['GET', 'POST'])
 def change_password():
 
+    print("SESSION =", dict(session))
+
     if 'logged_in' not in session:
+        print("User is NOT logged in")
         return redirect('/login')
+
+    print("User is logged in:", session.get("username"))
+    print("Role:", session.get("role"))
+
+    
 
     if request.method == 'POST':
 
