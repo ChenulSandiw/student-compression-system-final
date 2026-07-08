@@ -467,6 +467,16 @@ body.dark textarea {
 .delay-4 { animation-delay: .32s; }
 .delay-5 { animation-delay: .40s; }
 
+.student-name{
+    color:#ffffff;
+    text-decoration:none;
+    font-weight:800;
+}
+
+.student-name:hover{
+    color:#E2E8F0;
+}
+
 @media (max-width: 900px) {
     .main { margin-left: 0; padding: 20px; }
     .sidebar { display: none; }

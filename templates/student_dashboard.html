@@ -270,8 +270,13 @@
             </div>
             <div class="hero-info">
                 <h1>
-                    {% if student %}Welcome, {{ student[1] }}!
-                    {% else %}Welcome, {{ username }}!{% endif %}
+                    {% if student %}
+                    Welcome,
+                    <a href="/student_profile/{{ student[0] }}" class="student-name"></a>
+                    {{ student[1] }}</a>!
+                    {% else %}
+                    Welcome, {{ username }}!
+                    {% endif %}
                 </h1>
                 <div class="sub">
                     {% if student %}{{ student[2] }} &nbsp;·&nbsp; {{ student[3] }}
