@@ -1082,6 +1082,9 @@ def change_password():
             return redirect('/dashboard')
         else:
             return redirect('/student_dashboard')
+        
+        # GET request
+    return render_template("change_password.html")
 
         
 
