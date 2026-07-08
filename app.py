@@ -617,6 +617,8 @@ def edit_student(id):
         course = request.form['course']
         student_code = request.form['student_code']
         phone = request.form['phone']
+
+        print("PHONE =", repr(phone))
         address = request.form['address']
         dob = request.form['dob']
         gender = request.form['gender']
