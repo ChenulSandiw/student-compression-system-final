@@ -11,6 +11,7 @@ import os
 import math
 import random
 import boto3
+import traceback
 
 from datetime import datetime, timedelta
 
@@ -626,7 +627,7 @@ def edit_student(id):
             UPDATE students
             SET name=%s,
                 email=%s,
-                course=%s
+                course=%s,
                 student_code=%s,
                 phone=%s,
                 address=%s,
