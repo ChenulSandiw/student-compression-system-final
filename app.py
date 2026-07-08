@@ -17,6 +17,9 @@ from datetime import datetime, timedelta
 
 app = Flask(__name__)
 
+app.config["PROPAGATE_EXCEPTIONS"] = True
+app.debug = True
+
 # Secret Key
 app.secret_key = 'supersecretkey'
 
@@ -43,6 +46,7 @@ s3 = boto3.client(
 )
 
 AWS_BUCKET = os.environ.get('AWS_BUCKET_NAME')
+
 
 # =========================================
 # Home Page
@@ -1227,6 +1231,10 @@ def students_data():
     cursor.close()
 
     return "<br>".join([str(row) for row in data])
+
+@app.errorhandler(Exception)
+def handle_exception(e):
+    return f"<pre>{traceback.format_exc()}</pre>", 500
 
 
 
