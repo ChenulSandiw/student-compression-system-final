@@ -1204,6 +1204,28 @@ def students_columns():
 
     return "<br>".join([str(c) for c in columns])
 
+@app.route('/students_data')
+def students_data():
+
+    cursor = mysql.connection.cursor()
+
+    cursor.execute("""
+        SELECT
+            id,
+            name,
+            phone,
+            student_code,
+            address,
+            batch
+        FROM students
+    """)
+
+    data = cursor.fetchall()
+
+    cursor.close()
+
+    return "<br>".join([str(row) for row in data])
+
 
 
 # =========================================
