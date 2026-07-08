@@ -226,18 +226,37 @@
         </div>
     </div>
     <div class="nav-right">
-        <div class="nav-chip">
-            <div class="nav-chip-avatar">{{ username[0]|upper if username else '?' }}</div>
-            {{ username }}
-            <span class="badge b-student" style="margin-left:4px;">Student</span>
-        </div>
-        <button class="nbtn nbtn-dark" onclick="toggleDark()"><span id="di">🌙</span></button>
-        <a href="/change_password" class="nbtn nbtn-pw">🔑 Password</a>
-        <a href="/logout" class="nbtn nbtn-out">🚪 Logout</a>
+        <a href="/student_profile/{{ student[0] }}" class="nav-chip" style="text-decoration:none; color:inherit;">
+
+    <div class="nav-chip-avatar">
+        {{ username[0]|upper if username else '?' }}
     </div>
+
+    {{ username }}
+
+    <span class="badge b-student" style="margin-left:4px;">
+        Student
+    </span>
+
+</a>
+
+<button class="nbtn nbtn-dark" onclick="toggleDark()">
+        <span id="di">🌙</span>
+    </button>
+
+    <a href="/change_password" class="nbtn nbtn-pw">
+        🔑 Password
+    </a>
+
+    <a href="/logout" class="nbtn nbtn-out">
+        🚪 Logout
+    </a>
+
+</div>
 </nav>
 
 <div class="wrap">
+
 
     <!-- HERO -->
     <div class="hero au">
