@@ -1069,10 +1069,13 @@ def change_password():
 
         flash("Password changed successfully.", "success")
 
-        return redirect('/dashboard')
 
-    return render_template('change_password.html')
+        if session.get('role') == 'admin':
+            return redirect('/dashboard')
+        else:
+            return redirect('/student_dashboard')
 
+        
 
 # =========================================
 # Logout
@@ -1080,7 +1083,7 @@ def change_password():
 @app.route('/logout')
 def logout():
 
-    session.pop('logged_in', None)
+    session.clear()
 
     return redirect('/login')
 
