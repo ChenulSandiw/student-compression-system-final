@@ -315,7 +315,7 @@
                 <h1>
                     {% if student %}
                     Welcome,
-                    <a href="/student_profile/{{ student[0] }}" class="student-name"></a>
+                    <a href="/student_profile/{{ student[0] }}" class="student-name">
                     {{ student[1] }}</a>!
                     {% else %}
                     Welcome, {{ username }}!
@@ -556,7 +556,42 @@
 
                 <p>Select JPG, PNG, PDF or DOCX</p>
 
-                <input type="file" name="file" required>
+                <input
+                    type="file"
+                    id="fileInput"
+                    name="file"
+                    required
+                    onchange="showFileName()"
+                >
+
+                <div id="selectedFile" style="display:none;margin-top:20px;">
+
+                 <div style="
+                     background:#ECFDF5;
+                     border:1px solid #10B981;
+                     border-radius:12px;
+                     padding:15px;
+                 ">
+
+                    <div style="font-size:18px;">
+                         📄 <strong id="fileName"></strong>
+                    </div>
+
+                    <div id="fileSize"
+                         style="margin-top:6px;color:#64748B;">
+                    </div>
+
+                    <div style="
+                        margin-top:10px;
+                        color:#10B981;
+                        font-weight:700;
+                    ">
+                        ✅ Ready to Upload
+        </div>
+
+    </div>
+
+</div>
       
 
                 <br><br>
@@ -741,6 +776,28 @@ setTimeout(()=>{
     if(lb){ lb.textContent=pct+'%'; }
 },600);
 {% endif %}
+</script>
+<script>
+
+function showFileName(){
+
+    const fileInput=document.getElementById("fileInput");
+
+    if(fileInput.files.length===0){
+        return;
+    }
+
+    const file=fileInput.files[0];
+
+    document.getElementById("selectedFile").style.display="block";
+
+    document.getElementById("fileName").innerHTML=file.name;
+
+    document.getElementById("fileSize").innerHTML=
+        "Size : "+(file.size/1024/1024).toFixed(2)+" MB";
+
+}
+
 </script>
 </body>
 </html>
