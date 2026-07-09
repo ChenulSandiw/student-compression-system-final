@@ -292,28 +292,23 @@
                     <input type="text" name="guardian_name" class="form-input" placeholder="e.g. Mr. Sunil Perera">
                 </div>
             </div>
-        </div>
 
-        <!-- ═══ SECTION 4: Document Upload ═══ -->
-        <div class="card-glass form-section au d4">
-            <h5>📁 Document Upload</h5>
+               <div class="d-flex gap-3 mt-4">
 
-            <label class="form-label-custom">Student Document (image / PDF / DOCX) *</label>
-            <div class="upload-zone" id="docZone">
-                <div class="upload-icon">📤</div>
-                <p>Click or drag a file here to upload</p>
-                <small>Allowed: JPG, PNG, PDF, DOCX</small>
-                <input type="file" name="file" id="docInput" accept=".jpg,.jpeg,.png,.pdf,.docx" required onchange="showFileName(event)">
-            </div>
-            <div class="file-chosen" id="fileChosen">✅ <span id="fileChosenName"></span></div>
+        <button type="submit" class="btn-primary-custom">
+            ➕ Create Student Profile
+        </button>
 
-            <div class="d-flex gap-3 mt-4">
-                <button type="submit" class="btn-primary-custom">➕ Create Student Profile</button>
-                <a href="/view_students" class="btn-secondary-custom">Cancel</a>
-            </div>
-        </div>
+        <a href="/view_students" class="btn-secondary-custom">
+            Cancel
+        </a>
 
-    </form>
+    </div>
+
+</div>
+
+
+</form>
 
 </main>
 

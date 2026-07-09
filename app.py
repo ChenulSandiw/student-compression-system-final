@@ -470,7 +470,7 @@ def add_student():
                 Only JPG, JPEG, PNG, PDF, and DOCX files are allowed!
             </h2>
 
-            <a href="/add_student">
+            <a href="/student_dashboard">
                 Go Back
             </a>
             '''
@@ -1152,15 +1152,155 @@ def preview_file(filename):
             Back
         </a>
         '''
+    
+@app.route('/upload_assignment', methods=['POST'])
+def upload_assignment():
+
+    if 'logged_in' not in session:
+        return redirect('/login')
+
+    username = session['username']
+
+    file = request.files['file']
+
+    if file.filename == "":
+        flash("Please select a file.", "danger")
+        return redirect('/student_dashboard')
+
+    cursor = mysql.connection.cursor()
+
+    cursor.execute(
+        "SELECT * FROM students WHERE username=%s",
+        [username]
+    )
+
+    student = cursor.fetchone()
+
+    if not student:
+        cursor.close()
+        flash("Student profile not found.", "danger")
+        return redirect('/student_dashboard')
+
+    # =========================================
+    # Allowed File Types
+    # =========================================
+
+    allowed_extensions = ['png', 'jpg', 'jpeg', 'pdf', 'docx']
+
+    file_extension = file.filename.split('.')[-1].lower()
+
+    if file_extension not in allowed_extensions:
+
+        cursor.close()
+
+        flash("Only JPG, JPEG, PNG, PDF and DOCX files are allowed.", "danger")
+
+        return redirect('/student_dashboard')
+
+    # =========================================
+    # Save File
+    # =========================================
+
+    filename = secure_filename(file.filename)
+
+    filepath = os.path.join(
+        app.config['UPLOAD_FOLDER'],
+        filename
+    )
+
+    file.save(filepath)
+
+    original_size = os.path.getsize(filepath)
+
+    compressed_size = original_size
+
+    # =========================================
+    # Image Compression
+    # =========================================
+
+    if file_extension in ['jpg', 'jpeg', 'png']:
+
+        compressed_filename = "compressed_" + filename
+
+        compressed_path = os.path.join(
+            app.config['UPLOAD_FOLDER'],
+            compressed_filename
+        )
+
+        image = Image.open(filepath)
+
+        image.save(
+            compressed_path,
+            optimize=True,
+            quality=30
+        )
+
+        compressed_size = os.path.getsize(compressed_path)
+
+    # =========================================
+    # PDF / DOCX
+    # =========================================
+
+    else:
+
+        compressed_filename = filename
+
+    # =========================================
+    # Smart Storage
+    # =========================================
+
+    if original_size > 5000000:
+
+        storage_type = "Cloud Storage"
+
+        s3.upload_file(
+            filepath,
+            AWS_BUCKET,
+            filename
+        )
+
+    else:
+
+        storage_type = "Local Storage"
+
+    # =========================================
+    # Update Student Record
+    # =========================================
+
+    cursor.execute("""
+        UPDATE students
+        SET
+            filename=%s,
+            original_size=%s,
+            compressed_size=%s,
+            storage_type=%s
+        WHERE username=%s
+    """, (
+        filename,
+        str(original_size),
+        str(compressed_size),
+        storage_type,
+        username
+    ))
+
+    mysql.connection.commit()
+
+    cursor.close()
+
+    log_activity(username, "UPLOAD_ASSIGNMENT")
+
+    flash("Assignment uploaded successfully.", "success")
+
+    return redirect('/student_dashboard')
 
 # Download File
 @app.route('/download/<filename>')
 def download_file(filename):
 
-    if 'logged_in' not in session:
-        return redirect('/login')
+        if 'logged_in' not in session:
+            return redirect('/login')
 
-    return send_from_directory(
+        return send_from_directory(
         app.config['UPLOAD_FOLDER'],
         filename,
         as_attachment=True
