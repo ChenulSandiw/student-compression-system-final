@@ -627,7 +627,7 @@
 
         <form action="/upload_assignment" method="POST" enctype="multipart/form-data">
 
-            <div class="upload-box">
+            <div class="upload-box" id="uploadBox">
 
                 <div style="font-size:70px;">📤</div>
 
@@ -867,6 +867,7 @@ function showFileName(){
     const file=fileInput.files[0];
 
     document.getElementById("selectedFile").style.display="block";
+    document.getElementById("uploadBox").style.display="none";
 
     document.getElementById("fileName").innerHTML=file.name;
 
