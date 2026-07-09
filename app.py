@@ -447,8 +447,14 @@ def add_student():
         name = request.form['name']
         email = request.form['email']
         course = request.form['course']
-
         file = request.files['file']
+        student_code = request.form['student_code']
+        phone = request.form['phone']
+        address = request.form['address']
+        dob = request.form['dob']
+        gender = request.form['gender']
+        guardian_name = request.form['guardian_name']
+        batch = request.form['batch']
 
         # Allowed file types
         allowed_extensions = ['png', 'jpg', 'jpeg', 'pdf', 'docx']
@@ -532,10 +538,9 @@ def add_student():
 
         cursor.execute("""
             INSERT INTO students
-            (username, name, email, course, filename,
-             original_size, compressed_size,storage_type)
+            (username,name,email,course,filename,original_size,compressed_size,storage_type,student_code,phone,address,dob,gender,guardian_name,batch)
 
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         """, (
             username,
             name,
@@ -544,7 +549,14 @@ def add_student():
             filename,
             str(original_size),
             str(compressed_size),
-            storage_type
+            storage_type,
+            student_code,
+            phone,
+            address,
+            dob,
+            gender,
+            guardian_name,
+            batch
         ))
 
         mysql.connection.commit()
