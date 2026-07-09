@@ -123,6 +123,75 @@
         }
         .tab-icon { font-size:16px; }
 
+        .selected-file-card{
+
+            display:flex;
+            align-items:center;
+            gap:18px;
+
+            padding:18px;
+
+            border-radius:14px;
+
+            background:#ECFDF5;
+
+            border:2px solid #10B981;
+
+        }
+
+        .selected-file-icon{
+
+            width:60px;
+            height:60px;
+
+            border-radius:14px;
+
+            display:flex;
+            justify-content:center;
+            align-items:center;
+
+            font-size:28px;
+
+            background:white;
+
+        }
+
+        .selected-file-info{
+
+            flex:1;
+
+        }
+
+        .selected-file-name{
+
+            font-size:17px;
+
+            font-weight:700;
+
+            color:#0F172A;
+
+        }
+
+        .selected-file-size{
+
+             margin-top:6px;
+
+            color:#64748B;
+
+            font-size:14px;
+
+        }
+
+        .selected-file-status{
+
+            margin-top:10px;
+
+            color:#10B981;
+
+            font-weight:700;
+
+        }
+
         /* ══ TAB PAGES ══ */
         .tab-page { display:none; }
         .tab-page.active { display:block; animation:fadeIn .35s ease both; }
@@ -576,27 +645,25 @@
 
                 <div id="selectedFile" style="display:none;margin-top:20px;">
 
-                 <div style="
-                     background:#ECFDF5;
-                     border:1px solid #10B981;
-                     border-radius:12px;
-                     padding:15px;
-                 ">
+                 <div class="selected-file-card">
+                     <div class="selected-file-icon">
+                         📄
+                     </div>
 
-                    <div style="font-size:18px;">
-                         📄 <strong id="fileName"></strong>
-                    </div>
+                     <div class="selected-file-info">
 
-                    <div id="fileSize"
-                         style="margin-top:6px;color:#64748B;">
-                    </div>
+                         <div id="fileName" class="selected-file-name">
 
-                    <div style="
-                        margin-top:10px;
-                        color:#10B981;
-                        font-weight:700;
-                    ">
-                        ✅ Ready to Upload
+                         </div>
+                         
+                         <div id="fileSize" class="selected-file-size">
+
+                         </div>
+
+                        <div class="selected-file-status">
+                             ✅ Ready to Upload
+                        </div>
+
         </div>
 
     </div>
