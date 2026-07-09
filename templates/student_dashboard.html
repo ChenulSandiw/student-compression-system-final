@@ -493,6 +493,36 @@
     <div class="tab-page" id="tab-files">
 
         <div class="card">
+
+    <div class="card-hdr">
+        <div class="card-hdr-icon" style="background:rgba(16,185,129,.12);">
+            📤
+        </div>
+        <h3>Upload New Assignment</h3>
+    </div>
+
+    <div class="card-body">
+
+        <form action="/upload_assignment" method="POST" enctype="multipart/form-data">
+
+            <input
+                type="file"
+                name="file"
+                required
+                style="margin-bottom:15px;"
+            >
+
+            <button class="btn-primary" type="submit">
+                📤 Upload Assignment
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+        <div class="card">
             <div class="card-hdr">
                 <div class="card-hdr-icon" style="background:rgba(245,158,11,.1);">📁</div>
                 <h3>My Uploaded Files</h3>
