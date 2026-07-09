@@ -1262,10 +1262,15 @@ def upload_assignment():
     else:
 
         storage_type = "Local Storage"
+        print("Local Storage")
 
     # =========================================
     # Update Student Record
     # =========================================
+
+    print(filename)
+    print(storage_type)
+    print(username)
 
     cursor.execute("""
         UPDATE students
@@ -1284,6 +1289,7 @@ def upload_assignment():
     ))
 
     mysql.connection.commit()
+    print("Database Updated Successfully")
 
     cursor.close()
 
