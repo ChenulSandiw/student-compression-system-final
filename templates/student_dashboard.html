@@ -212,6 +212,49 @@
             .tabs { flex-wrap:wrap; }
             .tab { flex:none; width:calc(50% - 4px); }
         }
+
+        /* ===== Upload Box ===== */
+
+       .upload-box{
+           border:2px dashed #3B82F6;
+           border-radius:18px;
+           background:#F8FBFF;
+           padding:45px;
+           text-align:center;
+        }
+
+       .upload-box h3{
+           margin-top:15px;
+           margin-bottom:10px;
+           font-size:20px;
+           font-weight:700;
+        }
+
+        .upload-box p{
+            color:#64748B;
+            margin-bottom:25px;
+        }
+
+        .upload-box input[type=file]{
+            margin-bottom:25px;
+        }
+
+        .upload-btn{
+            background:linear-gradient(135deg,#0F172A,#2563EB);
+            color:white;
+            border:none;
+            border-radius:12px;
+            padding:14px 32px;
+            font-size:15px;
+            font-weight:700;
+            cursor:pointer;
+            transition:.3s;
+        }
+
+        .upload-btn:hover{
+            transform:translateY(-2px);
+            box-shadow:0 10px 25px rgba(37,99,235,.25);
+        }
     </style>
 </head>
 <body>
@@ -505,16 +548,26 @@
 
         <form action="/upload_assignment" method="POST" enctype="multipart/form-data">
 
-            <input
-                type="file"
-                name="file"
-                required
-                style="margin-bottom:15px;"
-            >
+            <div class="upload-box">
 
-            <button class="btn-primary" type="submit">
-                📤 Upload Assignment
-            </button>
+                <div style="font-size:70px;">📤</div>
+
+                <h3>Upload Your Assignment</h3>
+
+                <p>Select JPG, PNG, PDF or DOCX</p>
+
+                <input type="file" name="file" required>
+      
+
+                <br><br>
+
+                <button type="submit" class="upload-btn">
+
+                    Upload Assignment
+
+                </button>
+
+            </div>
 
         </form>
 
