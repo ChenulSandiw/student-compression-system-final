@@ -897,12 +897,14 @@ def delete_user(id):
         cursor.close()
         flash("User not found.", "danger")
         return redirect('/admin/users')
+    
+    # Prevent deleting the currently logged-in account
+    if user[0] == session['username']:
+       cursor.close()
+       flash("You cannot delete your own account while logged in.", "danger")
+       return redirect('/admin/users')
 
-    # Never allow deleting any admin account
-    if user[1] == "admin":
-        cursor.close()
-        flash("Admin accounts cannot be deleted.", "danger")
-        return redirect('/admin/users')
+    
 
     cursor.execute(
         "DELETE FROM users WHERE id=%s",
