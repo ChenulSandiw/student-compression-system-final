@@ -447,7 +447,6 @@ def add_student():
         name = request.form['name']
         email = request.form['email']
         course = request.form['course']
-        file = request.files['file']
         student_code = request.form['student_code']
         phone = request.form['phone']
         address = request.form['address']
@@ -456,100 +455,19 @@ def add_student():
         guardian_name = request.form['guardian_name']
         batch = request.form['batch']
 
-        # Allowed file types
-        allowed_extensions = ['png', 'jpg', 'jpeg', 'pdf', 'docx']
-
-        # File extension
-        file_extension = file.filename.split('.')[-1].lower()
-
-        # Validate file type
-        if file_extension not in allowed_extensions:
-
-            return '''
-            <h2 style="color:red;">
-                Only JPG, JPEG, PNG, PDF, and DOCX files are allowed!
-            </h2>
-
-            <a href="/student_dashboard">
-                Go Back
-            </a>
-            '''
-
-        # Secure filename
-        filename = secure_filename(file.filename)
-
-        # Save original file
-        filepath = os.path.join(
-            app.config['UPLOAD_FOLDER'],
-            filename
-        )
-
-        file.save(filepath)
-
-        # Original Size
-        original_size = os.path.getsize(filepath)
-
-        compressed_size = original_size
-
-        # =========================================
-        # IMAGE COMPRESSION
-        # =========================================
-        if file_extension in ['jpg', 'jpeg', 'png']:
-
-            compressed_filename = 'compressed_' + filename
-
-            compressed_path = os.path.join(
-                app.config['UPLOAD_FOLDER'],
-                compressed_filename
-            )
-
-            image = Image.open(filepath)
-
-            image.save(
-                compressed_path,
-                optimize=True,
-                quality=30
-            )
-
-            compressed_size = os.path.getsize(compressed_path)
-
-        # =========================================
-        # PDF / DOCX
-        # =========================================
-        else:
-
-            compressed_filename = filename
-
-        # Smart Storage Logic
-
-        if original_size > 5000000:  # 5MB
-            storage_type = "Cloud Storage"
-
-            s3.upload_file(
-                filepath,
-                AWS_BUCKET,
-                filename
-            )
-        else:
-            storage_type = "Local Storage" 
-
         # Save to database
         cursor = mysql.connection.cursor()
 
         cursor.execute("""
             INSERT INTO students
-            (username,name,email,course,filename,original_size,compressed_size,storage_type,student_code,phone,address,dob,gender,guardian_name,batch)
+            (username,name,email,course,student_code,phone,address,dob,gender,guardian_name,batch)
 
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,)
         """, (
             username,
             name,
             email,
             course,
-            filename,
-            str(original_size),
-            str(compressed_size),
-            storage_type,
             student_code,
             phone,
             address,
