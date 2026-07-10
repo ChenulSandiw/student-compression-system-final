@@ -699,11 +699,18 @@
             </div>
             <div class="card-body">
 
-                {% if files %}
+                {% if files and files[0][4] %}
                     {% for f in files %}
-                    {% set ext = f[4].split('.')[-1].lower() %}
+
+                    {% if f[4] %}
+                       {% set ext = f[4].split('.')[-1].lower() %}
+                    {% endif %}
+                        {% set ext = "" %}
+                    {% endif %}
                     <div class="file-item">
-                        {% if ext in ['jpg','jpeg','png'] %}
+                        {% if not f[4] %}
+                            <div class="file-icon" style="background:rgba(148,163,184,.12);">📂</div>
+                        {% elif ext in ['jpg','jpeg','png'] %}
                             <div class="file-icon" style="background:rgba(139,92,246,.1);">🖼️</div>
                         {% elif ext == 'pdf' %}
                             <div class="file-icon" style="background:rgba(239,68,68,.1);">📕</div>
@@ -711,13 +718,28 @@
                             <div class="file-icon" style="background:rgba(37,99,235,.1);">📘</div>
                         {% endif %}
                         <div style="min-width:0;flex:1;">
-                            <div class="file-name">{{ f[4] }}</div>
+
+                            <div class="file-name">
+                                {{ f[4] if f[4] else "No Assignment Uploaded" }}
+                            </div>
+
                             <div class="file-meta">
-                                {{ f[6] }} bytes compressed &nbsp;·&nbsp;
+
+                                {% if f[6] %}
+                                    {{ f[6] }} bytes compressed
+                                {% else %}
+                                    -
+                                {% endif %}
+
+                                &nbsp;·&nbsp;
                                 {% if f[7]=='Cloud Storage' %}
                                 <span class="badge b-cloud" style="font-size:10px;">☁️ Cloud</span>
+
+                                 {% elif f[7] == 'Local Storage' %}
+                                     <span class="badge b-local" style="font-size:10px;">💻 Local</span>
+
                                 {% else %}
-                                <span class="badge b-local" style="font-size:10px;">💻 Local</span>
+                                    <span class="badge" style="font-size:10px;">No Storage</span>
                                 {% endif %}
                             </div>
                         </div>
