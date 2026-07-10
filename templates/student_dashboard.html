@@ -704,7 +704,7 @@
 
                     {% if f[4] %}
                        {% set ext = f[4].split('.')[-1].lower() %}
-                    {% endif %}
+                    {% else %}
                         {% set ext = "" %}
                     {% endif %}
                     <div class="file-item">
