@@ -462,7 +462,7 @@ def add_student():
             INSERT INTO students
             (username,name,email,course,student_code,phone,address,dob,gender,guardian_name,batch)
 
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,)
         """, (
             username,
             name,
