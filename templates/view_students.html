@@ -232,7 +232,8 @@
 
                         <!-- File Preview -->
                         <td>
-                            {% set extension = student[4].split('.')[-1].lower() %}
+                            {% if student[4] %}
+                                {% set extension = student[4].split('.')[-1].lower() %}
                             {% if extension in ['jpg', 'jpeg', 'png'] %}
                                 <img src="{{ url_for('static', filename='uploads/compressed_' + student[4]) }}" class="file-thumb">
                             {% elif extension == 'pdf' %}
@@ -240,16 +241,44 @@
                             {% elif extension == 'docx' %}
                                 <span class="badge badge-docx">📘 DOCX</span>
                             {% endif %}
+
+                        {% else %}
+
+                            <span class="text-muted">No File</span>
+
+                        {% endif %}
                         </td>
 
-                        <td style="color:var(--muted);">{{ student[5] }} B</td>
-                        <td style="color:var(--green);font-weight:700;">{{ student[6] }} B</td>
+                        <td style="color:var(--muted);">
+                            {% if student[5] %}
+
+                                {{ student[5] }} B
+
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                        <td style="color:var(--green);font-weight:700;">
+                            {% if student[6] %}
+
+                                {{ student[6] }} B
+
+                                {% else %}
+                                    -
+                                {% endif %}
+                        </td>
 
                         <td>
                             {% if student[7] == 'Cloud Storage' %}
                                 <span class="badge badge-cloud">☁️ Cloud</span>
-                            {% else %}
+                            {% elif student[7] == 'Local Storage' %}
                                 <span class="badge badge-local">💻 Local</span>
+
+                            {% else %}
+
+                                <span class="text-muted">-</span>
+
+                            
                             {% endif %}
                         </td>
 
@@ -257,8 +286,10 @@
                             <div style="display:flex;gap:6px;flex-wrap:wrap;">
                                 <a href="/student_profile/{{ student[0] }}" class="btn-view">👤 Profile</a>
                                 <a href="/edit_student/{{ student[0] }}" class="btn-edit">✏️ Edit</a>
+                            {% if student[4] %}
                                 <a href="/preview/{{ student[4] }}" target="_blank" class="btn-preview">👁</a>
                                 <a href="/download/{{ student[4] }}" class="btn-download">⬇️</a>
+                            {% endif %}    
                                 <a href="/delete_student/{{ student[0] }}" class="btn-danger"
                                    onclick="return confirm('Delete this student?')">🗑</a>
                             </div>
