@@ -1330,6 +1330,31 @@ def students_data():
 def handle_exception(e):
     return f"<pre>{traceback.format_exc()}</pre>", 500
 
+# =========================================
+# Create Student Files Table
+# =========================================
+@app.route("/create_student_files_table")
+def create_student_files_table():
+
+    cursor = mysql.connection.cursor()
+
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS student_files (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        username VARCHAR(100) NOT NULL,
+        filename VARCHAR(255) NOT NULL,
+        original_size BIGINT,
+        compressed_size BIGINT,
+        storage_type VARCHAR(50),
+        uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+    """)
+
+    mysql.connection.commit()
+    cursor.close()
+
+    return "Student Files Table Created Successfully!"
+
 
 
 # =========================================
