@@ -558,70 +558,12 @@
                 </div>
             </div>
         </div>
-        
-<div class="card">
-    <div class="card-hdr">
-        <div class="card-hdr-icon" style="background:rgba(6,182,212,.12);">
-            📊
-        </div>
-        <h3>Compression Summary</h3>
-    </div>
 
-    <div class="card-body">
-
-        <div class="stat-row">
-
-            <div class="stat-pill">
-                <div class="stat-pill-val">
-                    {{ total_original }}
-                </div>
-                <div class="stat-pill-label">
-                    Original (B)
-                </div>
+        <div class="card">
+            <div class="card-hdr">
+                <div class="card-hdr-icon" style="background:rgba(6,182,212,.1);">📊</div>
+                <h3>Compression Summary</h3>
             </div>
-
-            <div class="stat-pill">
-                <div class="stat-pill-val" style="color:var(--green);">
-                    {{ total_compressed }}
-                </div>
-                <div class="stat-pill-label">
-                    Compressed (B)
-                </div>
-            </div>
-
-            <div class="stat-pill">
-                <div class="stat-pill-val" style="color:var(--cyan);">
-                    {{ saved_percent }}%
-                </div>
-                <div class="stat-pill-label">
-                    Saved
-                </div>
-            </div>
-
-        </div>
-
-        <div style="margin-top:20px;">
-
-            <div class="ii-label">
-                Storage Summary
-            </div>
-
-            <div style="margin-top:10px;">
-
-                <span class="badge b-local">
-                    💻 Local Files : {{ local_files }}
-                </span>
-
-                <span class="badge b-cloud">
-                    ☁️ Cloud Files : {{ cloud_files }}
-                </span>
-
-            </div>
-
-        </div>
-
-    </div>
-</div>
             <div class="card-body">
                 <div class="stat-row">
                     <div class="stat-pill">
@@ -674,23 +616,12 @@
 
         <div class="card">
 
-            ...
-        </div>    
-
     <div class="card-hdr">
-
-    <div class="card">
-
-         ...
-
+        <div class="card-hdr-icon" style="background:rgba(16,185,129,.12);">
+            📤
+        </div>
+        <h3>Upload New Assignment</h3>
     </div>
-
-    <div class="card">
-        ...
-    </div>
-
-</div>
-        
 
     <div class="card-body">
 
@@ -771,8 +702,8 @@
                 {% if files %}
                     {% for f in files %}
 
-                    {% if f[2] %}
-                        {% set ext = f[2].split('.')[-1].lower() %}
+                    {% set ext = f[2].split('.')[-1].lower() %}  
+
                     {% else %}
                         {% set ext = "" %}
                     {% endif %}
@@ -794,7 +725,7 @@
 
                             <div class="file-meta">
 
-                                {% if f[4] %}
+                                {% if f[6] %}
                                     {{ f[4] }} bytes compressed
                                 {% else %}
                                     -
@@ -829,28 +760,6 @@
         </div>
 
     </div>
-
-   
-
-        <div class="card-body">
-
-            <div class="stat-row">
-
-                <div class="stat-pill">
-                    <div class="stat-pill-val">
-                        {{ total_files }}
-                    </div>
-                    <div class="stat-pill-label">
-                        Uploaded Files
-                    </div>
-                </div>
-
-            </div>
-
-        </div>
-    </div>
-
-
 
     <!-- ══ TAB: STORAGE ══ -->
     <div class="tab-page" id="tab-storage">
