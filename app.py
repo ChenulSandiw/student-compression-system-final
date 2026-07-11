@@ -378,7 +378,35 @@ def student_dashboard():
     """, [username])
 
     files = cursor.fetchall()
+
+
     total_files = len(files)
+
+    local_files = 0
+    cloud_files = 0
+
+    total_original = 0
+    total_compressed = 0
+
+    for f in files:
+        if f[5] == "Local Storage":
+            local_files += 1
+
+        elif f[5] == "Cloud Storage":
+            cloud_files += 1
+
+        if f[3]:
+            total_original += int(f[3])
+
+        if f[4]:
+            total_compressed += int(f[4])
+
+    saved_bytes = total_original - total_compressed
+
+    if total_original > 0:
+        saved_percent = round((saved_bytes / total_original) * 100, 1)
+    else:
+        saved_percent = 0
 
     cursor.close()
 
@@ -387,7 +415,14 @@ def student_dashboard():
         username=username,
         student=student,
         files=files,
-        total_files=total_files
+
+        total_files=total_files,
+        local_files=local_files,
+        cloud_files=cloud_files,
+
+        total_original=total_original,
+        total_compressed=total_compressed,
+        saved_percent=saved_percent
     )
 
 # =========================================
