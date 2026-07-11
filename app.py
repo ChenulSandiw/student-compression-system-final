@@ -369,10 +369,15 @@ def student_dashboard():
 
     student = cursor.fetchone()
 
-    if student:
-        files = [student]
-    else:
-        files = []
+    # Uploaded Files
+    cursor.execute("""
+        SELECT *
+        FROM student_files
+        WHERE username=%s
+        ORDER BY uploaded_at DESC
+    """, [username])
+
+    files = cursor.fetchall()
 
     cursor.close()
 
@@ -380,7 +385,8 @@ def student_dashboard():
         'student_dashboard.html',
         username=username,
         student=student,
-        files=files)
+        files=files
+    )
 
 # =========================================
 # analytics
@@ -1191,19 +1197,21 @@ def upload_assignment():
     print(username)
 
     cursor.execute("""
-        UPDATE students
-        SET
-            filename=%s,
-            original_size=%s,
-            compressed_size=%s,
-            storage_type=%s
-        WHERE username=%s
+        INSERT INTO student_files
+        (
+            username,
+            filename,
+            original_size,
+            compressed_size,
+            storage_type
+        )
+        VALUES (%s, %s, %s, %s, %s)
     """, (
+        username,
         filename,
-        str(original_size),
-        str(compressed_size),
-        storage_type,
-        username
+        original_size,
+        compressed_size,
+        storage_type
     ))
 
     mysql.connection.commit()

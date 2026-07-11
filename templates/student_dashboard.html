@@ -699,16 +699,16 @@
             </div>
             <div class="card-body">
 
-                {% if files and files[0][4] %}
+                {% if files %}
                     {% for f in files %}
 
-                    {% if f[4] %}
-                       {% set ext = f[4].split('.')[-1].lower() %}
+                    {% if f[2] %}
+                        {% set ext = f[2].split('.')[-1].lower() %}
                     {% else %}
                         {% set ext = "" %}
                     {% endif %}
                     <div class="file-item">
-                        {% if not f[4] %}
+                        {% if not f[2] %}
                             <div class="file-icon" style="background:rgba(148,163,184,.12);">📂</div>
                         {% elif ext in ['jpg','jpeg','png'] %}
                             <div class="file-icon" style="background:rgba(139,92,246,.1);">🖼️</div>
@@ -720,22 +720,22 @@
                         <div style="min-width:0;flex:1;">
 
                             <div class="file-name">
-                                {{ f[4] if f[4] else "No Assignment Uploaded" }}
+                                {{ f[2] }}
                             </div>
 
                             <div class="file-meta">
 
-                                {% if f[6] %}
-                                    {{ f[6] }} bytes compressed
+                                {% if f[4] %}
+                                    {{ f[4] }} bytes compressed
                                 {% else %}
                                     -
                                 {% endif %}
 
                                 &nbsp;·&nbsp;
-                                {% if f[7]=='Cloud Storage' %}
+                                {% if f[5]=='Cloud Storage' %}
                                 <span class="badge b-cloud" style="font-size:10px;">☁️ Cloud</span>
 
-                                 {% elif f[7] == 'Local Storage' %}
+                                 {% elif f[5] == 'Local Storage' %}
                                      <span class="badge b-local" style="font-size:10px;">💻 Local</span>
 
                                 {% else %}
@@ -744,8 +744,8 @@
                             </div>
                         </div>
                         <div class="file-actions">
-                            <a href="/preview/{{ f[4] }}" target="_blank" class="fa-btn fa-preview">👁 View</a>
-                            <a href="/download/{{ f[4] }}" class="fa-btn fa-download">⬇️ Save</a>
+                            <a href="/preview/{{ f[2] }}" target="_blank" class="fa-btn fa-preview">👁 View</a>
+                            <a href="/download/{{ f[2] }}" class="fa-btn fa-download">⬇️ Save</a>
                         </div>
                     </div>
                     {% endfor %}
