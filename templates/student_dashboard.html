@@ -559,127 +559,31 @@
             </div>
         </div>
         
-<div class="card">
-    <div class="card-hdr">
-        <div class="card-hdr-icon" style="background:rgba(6,182,212,.12);">
-            📊
-        </div>
-        <h3>Compression Summary</h3>
-    </div>
 
-    <div class="card-body">
-
-        <div class="stat-row">
-
-            <div class="stat-pill">
-                <div class="stat-pill-val">
-                    {{ total_original }}
-                </div>
-                <div class="stat-pill-label">
-                    Original (B)
-                </div>
-            </div>
-
-            <div class="stat-pill">
-                <div class="stat-pill-val" style="color:var(--green);">
-                    {{ total_compressed }}
-                </div>
-                <div class="stat-pill-label">
-                    Compressed (B)
-                </div>
-            </div>
-
-            <div class="stat-pill">
-                <div class="stat-pill-val" style="color:var(--cyan);">
-                    {{ saved_percent }}%
-                </div>
-                <div class="stat-pill-label">
-                    Saved
-                </div>
-            </div>
-
-        </div>
-
-        <div style="margin-top:20px;">
-
-            <div class="ii-label">
-                Storage Summary
-            </div>
-
-            <div style="margin-top:10px;">
-
-                <span class="badge b-local">
-                    💻 Local Files : {{ local_files }}
-                </span>
-
-                <span class="badge b-cloud">
-                    ☁️ Cloud Files : {{ cloud_files }}
-                </span>
-
-            </div>
-
-        </div>
-
-    </div>
-</div>
-            <div class="card-body">
-                <div class="stat-row">
-                    <div class="stat-pill">
-                        <div class="stat-pill-val">{{ student[5] }}</div>
-                        <div class="stat-pill-label">Original (B)</div>
-                    </div>
-                    <div class="stat-pill">
-                        <div class="stat-pill-val" style="color:var(--green);">{{ student[6] }}</div>
-                        <div class="stat-pill-label">Compressed (B)</div>
-                    </div>
-                    <div class="stat-pill">
-                        {% if student[5] and student[5]|int > 0 %}
-                        <div class="stat-pill-val" style="color:var(--cyan);">
-                            {{ ((student[5]|int - student[6]|int) / student[5]|int * 100)|round(1) }}%
-                        </div>
-                        {% else %}
-                        <div class="stat-pill-val">0%</div>
-                        {% endif %}
-                        <div class="stat-pill-label">Saved</div>
-                    </div>
-                </div>
-
-                {% if student[5] and student[5]|int > 0 %}
-                <div class="prog-row">
-                    <span>Compression efficiency</span>
-                    <span id="pctLabel">—</span>
-                </div>
-                <div class="prog-track">
-                    <div class="prog-fill" id="progFill"></div>
-                </div>
-                {% endif %}
-
-                <div style="margin-top:14px;">
-                    <div class="ii-label">Storage Type</div>
-                    <div style="margin-top:5px;">
-                        {% if student[7] == 'Cloud Storage' %}
-                        <span class="badge b-cloud">☁️ Cloud Storage (AWS S3)</span>
-                        {% else %}
-                        <span class="badge b-local">💻 Local Storage</span>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    </div>
 
     <!-- ══ TAB: FILES ══ -->
     <div class="tab-page" id="tab-files">
 
-        <div class="card">
-
-    <div class="card-hdr">
-        <div class="card-hdr-icon" style="background:rgba(16,185,129,.12);">
-            📤
+    <div class="card">
+      <div class="card-hdr">
+        <div class="card-hdr-icon" style="background:rgba(6,182,212,.12);">📊</div>
+        <h3>Upload Summary</h3>
+      </div>
+      <div class="card-body">
+        <div class="stat-row">
+          <div class="stat-pill"><div class="stat-pill-val">{{ total_files }}</div><div class="stat-pill-label">Uploaded Files</div></div>
+          <div class="stat-pill"><div class="stat-pill-val">{{ local_files }}</div><div class="stat-pill-label">Local Files</div></div>
+          <div class="stat-pill"><div class="stat-pill-val">{{ cloud_files }}</div><div class="stat-pill-label">Cloud Files</div></div>
         </div>
-        <h3>Upload New Assignment</h3>
+      </div>
     </div>
+
+<div class="card">
+            .... My Uploaded Files ....
+        </div>
+
+    </div>
+        
 
     <div class="card-body">
 
@@ -819,13 +723,7 @@
 
     </div>
 
-    <div class="card">
-        <div class="card-hdr">
-            <div class="card-hdr-icon" style="background:rgba(37,99,235,.12);">
-                📊
-            </div>
-            <h3>Upload Summary</h3>
-        </div>
+   
 
         <div class="card-body">
 
