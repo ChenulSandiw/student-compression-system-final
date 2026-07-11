@@ -124,72 +124,46 @@
         .tab-icon { font-size:16px; }
 
         .selected-file-card{
-
             display:flex;
             align-items:center;
             gap:18px;
-
             padding:18px;
-
             border-radius:14px;
-
             background:#ECFDF5;
-
             border:2px solid #10B981;
-
         }
 
         .selected-file-icon{
-
             width:60px;
             height:60px;
-
             border-radius:14px;
-
             display:flex;
             justify-content:center;
             align-items:center;
-
             font-size:28px;
-
             background:white;
-
         }
 
         .selected-file-info{
-
             flex:1;
-
         }
 
         .selected-file-name{
-
             font-size:17px;
-
             font-weight:700;
-
             color:#0F172A;
-
         }
 
         .selected-file-size{
-
-             margin-top:6px;
-
+            margin-top:6px;
             color:#64748B;
-
             font-size:14px;
-
         }
 
         .selected-file-status{
-
             margin-top:10px;
-
             color:#10B981;
-
             font-weight:700;
-
         }
 
         /* ══ TAB PAGES ══ */
@@ -349,36 +323,30 @@
     </div>
     <div class="nav-right">
         <a href="/student_profile/{{ student[0] }}" class="nav-chip" style="text-decoration:none; color:#ffffff;">
+            <div class="nav-chip-avatar">
+                {{ username[0]|upper if username else '?' }}
+            </div>
+            {{ username }}
+            <span class="badge b-student" style="margin-left:4px;">
+                Student
+            </span>
+        </a>
 
-    <div class="nav-chip-avatar">
-        {{ username[0]|upper if username else '?' }}
+        <button class="nbtn nbtn-dark" onclick="toggleDark()">
+            <span id="di">🌙</span>
+        </button>
+
+        <a href="/change_password" class="nbtn nbtn-pw">
+            🔑 Password
+        </a>
+
+        <a href="/logout" class="nbtn nbtn-out">
+            🚪 Logout
+        </a>
     </div>
-
-    {{ username }}
-
-    <span class="badge b-student" style="margin-left:4px;">
-        Student
-    </span>
-
-</a>
-
-<button class="nbtn nbtn-dark" onclick="toggleDark()">
-        <span id="di">🌙</span>
-    </button>
-
-    <a href="/change_password" class="nbtn nbtn-pw">
-        🔑 Password
-    </a>
-
-    <a href="/logout" class="nbtn nbtn-out">
-        🚪 Logout
-    </a>
-
-</div>
 </nav>
 
 <div class="wrap">
-
 
     <!-- HERO -->
     <div class="hero au">
@@ -394,8 +362,7 @@
                 <h1>
                     {% if student %}
                     Welcome,
-                    <a href="/student_profile/{{ student[0] }}" class="student-name">
-                    {{ student[1] }}</a>!
+                    <a href="/student_profile/{{ student[0] }}" class="student-name">{{ student[1] }}</a>!
                     {% else %}
                     Welcome, {{ username }}!
                     {% endif %}
@@ -521,8 +488,6 @@
             </div>
         </div>
 
-        
-
     </div>
 
     <!-- ══ TAB: ACADEMIC ══ -->
@@ -616,81 +581,76 @@
 
         <div class="card">
 
-    <div class="card-hdr">
-        <div class="card-hdr-icon" style="background:rgba(16,185,129,.12);">
-            📤
-        </div>
-        <h3>Upload New Assignment</h3>
-    </div>
+            <div class="card-hdr">
+                <div class="card-hdr-icon" style="background:rgba(16,185,129,.12);">
+                    📤
+                </div>
+                <h3>Upload New Assignment</h3>
+            </div>
 
-    <div class="card-body">
+            <div class="card-body">
 
-        <form action="/upload_assignment" method="POST" enctype="multipart/form-data">
+                <form action="/upload_assignment" method="POST" enctype="multipart/form-data">
 
-          <div class="upload-box">
+                  <div class="upload-box">
 
-             <div id="uploadInfo">
+                     <div id="uploadInfo">
 
+                        <div style="font-size:70px;">📤</div>
 
-                <div style="font-size:70px;">📤</div>
+                        <h3>Upload Your Assignment</h3>
 
-                <h3>Upload Your Assignment</h3>
-
-                <p>Select JPG, PNG, PDF or DOCX</p>
-             </div>
-
-                <input
-                    type="file"
-                    id="fileInput"
-                    name="file"
-                    required
-                    onchange="showFileName()"
-                    
-                >
-
-                <div id="selectedFile" style="display:none;margin-top:20px;">
-
-                 <div class="selected-file-card">
-                     <div class="selected-file-icon">
-                         📄
+                        <p>Select JPG, PNG, PDF or DOCX</p>
                      </div>
 
-                     <div class="selected-file-info">
+                        <input
+                            type="file"
+                            id="fileInput"
+                            name="file"
+                            required
+                            onchange="showFileName()"
+                        >
 
-                         <div id="fileName" class="selected-file-name">
+                        <div id="selectedFile" style="display:none;margin-top:20px;">
 
-                         </div>
-                         
-                         <div id="fileSize" class="selected-file-size">
+                         <div class="selected-file-card">
+                             <div class="selected-file-icon">
+                                 📄
+                             </div>
 
-                         </div>
+                             <div class="selected-file-info">
 
-                        <div class="selected-file-status">
-                             ✅ Ready to Upload
+                                 <div id="fileName" class="selected-file-name">
+
+                                 </div>
+
+                                 <div id="fileSize" class="selected-file-size">
+
+                                 </div>
+
+                                <div class="selected-file-status">
+                                     ✅ Ready to Upload
+                                </div>
+
+                            </div>
+
                         </div>
 
-        </div>
+                    </div>
 
-    </div>
+                        <br><br>
 
-</div>
-      
+                        <button type="submit" class="upload-btn">
+                            Upload Assignment
+                        </button>
 
-                <br><br>
+                    </div>
 
-                <button type="submit" class="upload-btn">
-
-                    Upload Assignment
-
-                </button>
+                </form>
 
             </div>
 
-        </form>
-
-    </div>
-
-</div>
+        </div>
 
         <div class="card">
             <div class="card-hdr">
@@ -702,11 +662,12 @@
                 {% if files %}
                     {% for f in files %}
 
-                    {% set ext = f[2].split('.')[-1].lower() %}  
-
+                    {% if f[2] %}
+                        {% set ext = f[2].split('.')[-1].lower() %}
                     {% else %}
                         {% set ext = "" %}
                     {% endif %}
+
                     <div class="file-item">
                         {% if not f[2] %}
                             <div class="file-icon" style="background:rgba(148,163,184,.12);">📂</div>
