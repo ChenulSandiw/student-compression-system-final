@@ -1324,23 +1324,7 @@ def students_data():
 
     return "<br>".join([str(row) for row in data])
 
-@app.route('/unlock_admin')
-def unlock_admin():
 
-    cursor = mysql.connection.cursor()
-
-    cursor.execute("""
-        UPDATE users
-        SET
-            is_locked = 0,
-            failed_attempts = 0,
-            locked_until = NULL
-    """)
-
-    mysql.connection.commit()
-    cursor.close()
-
-    return "All accounts unlocked successfully!"
 
 @app.errorhandler(Exception)
 def handle_exception(e):
