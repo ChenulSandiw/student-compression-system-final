@@ -870,5 +870,12 @@ function showFileName(){
 }
 
 </script>
+
+{% if auto_download_filename %}
+<a id="autoDownloadLink" href="{{ url_for('download_file', filename=auto_download_filename) }}" style="display:none;"></a>
+<script>
+    document.getElementById('autoDownloadLink').click();
+</script>
+{% endif %}
 </body>
 </html>

@@ -410,6 +410,8 @@ def student_dashboard():
 
     cursor.close()
 
+    auto_download_filename = session.pop('auto_download_file', None)
+
     return render_template(
         'student_dashboard.html',
         username=username,
@@ -422,7 +424,9 @@ def student_dashboard():
 
         total_original=total_original,
         total_compressed=total_compressed,
-        saved_percent=saved_percent
+        saved_percent=saved_percent,
+        auto_download_filename=auto_download_filename
+        
     )
 
 # =========================================
@@ -1224,6 +1228,8 @@ def upload_assignment():
 
         storage_type = "Local Storage"
         print("Local Storage")
+
+        session['auto_download_file'] = filename
 
     # =========================================
     # Update Student Record
