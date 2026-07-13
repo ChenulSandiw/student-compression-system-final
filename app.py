@@ -24,12 +24,8 @@ app.debug = True
 app.secret_key = 'supersecretkey'
 
 # Upload Folder
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-UPLOAD_FOLDER = os.path.join(BASE_DIR, 'static', 'uploads')
+UPLOAD_FOLDER = 'static/uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
-# Folder automatic 
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 
 # MySQL Configuration
@@ -1403,13 +1399,6 @@ def create_student_files_table():
     cursor.close()
 
     return "Student Files Table Created Successfully!"
-
-@app.route("/check_uploads")
-def check_uploads():
-
-    files = os.listdir(app.config['UPLOAD_FOLDER'])
-
-    return "<br>".join(files)
 
 
 
