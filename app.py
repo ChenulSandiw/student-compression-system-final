@@ -1340,7 +1340,7 @@ def upload_assignment():
 
     flash("Assignment uploaded successfully.", "success")
 
-    return redirect('/student_dashboard')
+    return redirect('/student_dashboard?tab=files')
 
 # Download File
 @app.route('/download/<filename>')

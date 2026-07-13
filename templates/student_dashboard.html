@@ -312,6 +312,30 @@
 </head>
 <body>
 
+   
+
+<!-- TOAST NOTIFICATION -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div id="toastBox" style="position:fixed;top:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:10px;">
+      {% for category, message in messages %}
+        <div class="app-toast" style="background:{{ '#16a34a' if category=='success' else '#2563eb' }};color:#fff;padding:14px 20px;border-radius:10px;box-shadow:0 8px 20px rgba(0,0,0,.15);font-size:14px;font-weight:600;opacity:0;transform:translateX(20px);transition:all .3s ease;">
+          {{ '✅' if category=='success' else 'ℹ️' }} {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+    <script>
+      window.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.app-toast').forEach((t, i) => {
+          setTimeout(() => { t.style.opacity = '1'; t.style.transform = 'translateX(0)'; }, 100 + i * 100);
+          setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translateX(20px)'; }, 3500);
+          setTimeout(() => { t.remove(); }, 4000);
+        });
+      });
+    </script>
+  {% endif %}
+{% endwith %}
+
 <!-- TOPNAV -->
 <nav class="topnav">
     <div class="nav-brand">
@@ -847,6 +871,15 @@ function showTab(name, btn){
     document.getElementById('tab-'+name).classList.add('active');
     btn.classList.add('active');
 }
+
+window.addEventListener('DOMContentLoaded', () => {
+    const params = new URLSearchParams(window.location.search);
+    const tabName = params.get('tab');
+    if (tabName) {
+        const btn = document.querySelector(`.tab[onclick*="showTab('${tabName}'"]`);
+        if (btn) { showTab(tabName, btn); }
+    }
+});
 
 /* Progress bars */
 {% if total_original and total_original > 0 %}
