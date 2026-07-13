@@ -203,7 +203,21 @@
             <div class="row g-3">
                 <div class="col-md-6">
                     <label class="form-label-custom">Course *</label>
-                    <input type="text" name="course" class="form-input" value="{{ student[3] }}" required>
+                    <select name="course" class="form-select-custom" required>
+                        <option value="" {% if not student[3] %}selected{% endif %}>Select course</option>
+                        <option value="Software Engineering" {% if student[3]=='Software Engineering' %}selected{% endif %}>Software Engineering</option>
+                        <option value="Computer Science" {% if student[3]=='Computer Science' %}selected{% endif %}>Computer Science</option>
+                        <option value="Information Technology" {% if student[3]=='Information Technology' %}selected{% endif %}>Information Technology</option>
+                        <option value="Data Science" {% if student[3]=='Data Science' %}selected{% endif %}>Data Science</option>
+                        <option value="Cyber Security" {% if student[3]=='Cyber Security' %}selected{% endif %}>Cyber Security</option>
+                        <option value="Networking" {% if student[3]=='Networking' %}selected{% endif %}>Networking</option>
+                        <option value="Business Information Systems" {% if student[3]=='Business Information Systems' %}selected{% endif %}>Business Information Systems</option>
+                        <option value="Multimedia" {% if student[3]=='Multimedia' %}selected{% endif %}>Multimedia</option>
+                        <option value="Other" {% if student[3]=='Other' %}selected{% endif %}>Other</option>
+                        {% if student[3] and student[3] not in ['Software Engineering','Computer Science','Information Technology','Data Science','Cyber Security','Networking','Business Information Systems','Multimedia','Other'] %}
+                        <option value="{{ student[3] }}" selected>{{ student[3] }}</option>
+                        {% endif %}
+                    </select>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label-custom">Year / Batch</label>
