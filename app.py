@@ -24,8 +24,12 @@ app.debug = True
 app.secret_key = 'supersecretkey'
 
 # Upload Folder
-UPLOAD_FOLDER = 'static/uploads'
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+UPLOAD_FOLDER = os.path.join(BASE_DIR, 'static', 'uploads')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+# Folder automatic 
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 
 # MySQL Configuration
