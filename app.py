@@ -333,6 +333,44 @@ def dashboard():
 
         predicted_storage = 0
 
+    # =========================================
+    # Cloud Storage (AWS S3) Usage vs Quota
+    # =========================================
+    # Note: uploaded_assignment() uploads the ORIGINAL file to S3
+    # (compression only happens to the local copy), so original_size
+    # is what's actually sitting in the S3 bucket for cloud files.
+
+    cloud_storage_quota_gb = 100
+
+    cloud_storage_quota_bytes = cloud_storage_quota_gb * 1024 * 1024 * 1024
+
+    cursor.execute(
+        "SELECT SUM(original_size) FROM student_files WHERE storage_type='Cloud Storage'"
+    )
+    cloud_storage_used_bytes = cursor.fetchone()[0]
+
+    if cloud_storage_used_bytes is None:
+        cloud_storage_used_bytes = 0
+
+    cloud_storage_used_gb = round(cloud_storage_used_bytes / (1024 ** 3), 2)
+
+    cloud_storage_remaining_gb = round(
+        (cloud_storage_quota_bytes - cloud_storage_used_bytes) / (1024 ** 3), 2
+    )
+
+    if cloud_storage_remaining_gb < 0:
+        cloud_storage_remaining_gb = 0
+
+    if cloud_storage_quota_bytes > 0:
+        cloud_storage_percent_used = round(
+            (cloud_storage_used_bytes / cloud_storage_quota_bytes) * 100, 2
+        )
+    else:
+        cloud_storage_percent_used = 0
+
+    if cloud_storage_percent_used > 100:
+        cloud_storage_percent_used = 100
+
     cursor.close()
 
     return render_template(
@@ -343,6 +381,11 @@ def dashboard():
         saved_percentage=saved_percentage,
         predicted_storage=predicted_storage,
         local_files=local_files,
+
+        cloud_storage_quota_gb=cloud_storage_quota_gb,
+        cloud_storage_used_gb=cloud_storage_used_gb,
+        cloud_storage_remaining_gb=cloud_storage_remaining_gb,
+        cloud_storage_percent_used=cloud_storage_percent_used,
         cloud_files=cloud_files
     )
 

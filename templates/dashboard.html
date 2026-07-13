@@ -302,7 +302,7 @@
         /* ─── STAT CARDS ─── */
         .stat-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(4, 1fr);
             gap: 20px;
             margin-bottom: 24px;
         }
@@ -746,11 +746,19 @@
             </div>
 
             <div class="card-glass stat-card anim-slide-up delay-2"
+                 style="--card-accent: linear-gradient(90deg, #7C3AED, #A78BFA);">
+                <div class="stat-icon" style="background: rgba(167,139,250,.12);">📦</div>
+                <div class="stat-label">Total Original Size</div>
+                <div class="stat-value counter" data-target="{{ original_size }}">0</div>
+                <div class="stat-sub">Bytes, all students</div>
+            </div>
+
+            <div class="card-glass stat-card anim-slide-up delay-2"
                  style="--card-accent: linear-gradient(90deg, #0EA5E9, #38BDF8);">
                 <div class="stat-icon" style="background: rgba(56,189,248,.12);">⚡</div>
                 <div class="stat-label">Compressed Size</div>
                 <div class="stat-value counter" data-target="{{ compressed_size }}">0</div>
-                <div class="stat-sub">Bytes stored</div>
+                <div class="stat-sub">Bytes, all students</div>
             </div>
 
             <div class="card-glass stat-card anim-slide-up delay-3"
@@ -787,6 +795,40 @@
                 </div>
             </div>
 
+        </div>
+
+        <!-- Cloud Storage Quota -->
+        <div class="card-glass ai-card anim-slide-up delay-5">
+            <h4>☁️ Cloud Storage Usage (AWS S3)</h4>
+            <p class="ai-label">
+                Files over 5MB are stored in Cloud Storage. Your plan is
+                <strong>{{ cloud_storage_quota_gb }} GB</strong>.
+            </p>
+
+            <div class="progress-wrap" style="margin-top:16px;">
+                <div class="progress-label">
+                    <span>{{ cloud_storage_used_gb }} GB used of {{ cloud_storage_quota_gb }} GB</span>
+                    <span>{{ cloud_storage_percent_used }}%</span>
+                </div>
+                <div class="progress-track" style="height:12px;">
+                    <div class="progress-fill" id="cloudBar" style="background:linear-gradient(90deg,#0EA5E9,#38BDF8);"></div>
+                </div>
+            </div>
+
+            <div style="display:flex; gap:32px; margin-top:20px; flex-wrap:wrap;">
+                <div>
+                    <div class="stat-label">Used</div>
+                    <div style="font-size:22px;font-weight:800;color:var(--text);">{{ cloud_storage_used_gb }} GB</div>
+                </div>
+                <div>
+                    <div class="stat-label">Remaining</div>
+                    <div style="font-size:22px;font-weight:800;color:#10B981;">{{ cloud_storage_remaining_gb }} GB</div>
+                </div>
+                <div>
+                    <div class="stat-label">Total Plan</div>
+                    <div style="font-size:22px;font-weight:800;color:var(--text);">{{ cloud_storage_quota_gb }} GB</div>
+                </div>
+            </div>
         </div>
 
         <!-- AI Prediction -->
@@ -901,8 +943,11 @@
         // ── Progress Bar ──
         function animateBar() {
             const savedPct = {{ saved_percentage }};
+            const cloudPct = {{ cloud_storage_percent_used }};
             setTimeout(() => {
                 document.getElementById('savedBar').style.width = savedPct + '%';
+                const cloudBar = document.getElementById('cloudBar');
+                if (cloudBar) { cloudBar.style.width = cloudPct + '%'; }
             }, 600);
         }
 
