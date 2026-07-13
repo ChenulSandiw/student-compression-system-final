@@ -628,14 +628,6 @@
                         <div class="stat-pill-val">{{ files|length }}</div>
                         <div class="stat-pill-label">Total Files</div>
                     </div>
-                    <div class="stat-pill">
-                        <div class="stat-pill-val">{{ total_original.value }}</div>
-                        <div class="stat-pill-label">Original (B)</div>
-                    </div>
-                    <div class="stat-pill">
-                        <div class="stat-pill-val" style="color:var(--green);">{{ total_compressed.value }}</div>
-                        <div class="stat-pill-label">Compressed (B)</div>
-                    </div>
                 </div>
 
                 {% if total_original.value > 0 %}
