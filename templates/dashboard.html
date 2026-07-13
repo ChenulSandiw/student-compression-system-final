@@ -749,16 +749,16 @@
                  style="--card-accent: linear-gradient(90deg, #7C3AED, #A78BFA);">
                 <div class="stat-icon" style="background: rgba(167,139,250,.12);">📦</div>
                 <div class="stat-label">Total Original Size</div>
-                <div class="stat-value counter" data-target="{{ original_size }}">0</div>
-                <div class="stat-sub">Bytes, all students</div>
+                <div class="stat-value counter" data-target="{{ (original_size / (1024*1024)) | round(2) }}">0</div>
+                <div class="stat-sub">MB, all students</div>
             </div>
 
             <div class="card-glass stat-card anim-slide-up delay-2"
                  style="--card-accent: linear-gradient(90deg, #0EA5E9, #38BDF8);">
                 <div class="stat-icon" style="background: rgba(56,189,248,.12);">⚡</div>
                 <div class="stat-label">Compressed Size</div>
-                <div class="stat-value counter" data-target="{{ compressed_size }}">0</div>
-                <div class="stat-sub">Bytes, all students</div>
+                <div class="stat-value counter" data-target="{{ (compressed_size / (1024*1024)) | round(2) }}">0</div>
+                <div class="stat-sub">MB, all students</div>
             </div>
 
             <div class="card-glass stat-card anim-slide-up delay-3"
