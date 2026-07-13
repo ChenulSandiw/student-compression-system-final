@@ -603,17 +603,17 @@
         </div>
 
         {% if files %}
-        {% set total_original = namespace(value=0) %}
-        {% set total_compressed = namespace(value=0) %}
-        {% set cloud_count = namespace(value=0) %}
-        {% set local_count = namespace(value=0) %}
+        {% set files_total_original = namespace(value=0) %}
+        {% set files_total_compressed = namespace(value=0) %}
+        {% set files_cloud_count = namespace(value=0) %}
+        {% set files_local_count = namespace(value=0) %}
         {% for f in files %}
-            {% set total_original.value = total_original.value + (f[3]|int if f[3] else 0) %}
-            {% set total_compressed.value = total_compressed.value + (f[4]|int if f[4] else 0) %}
+            {% set files_total_original.value = files_total_original.value + (f[3]|int if f[3] else 0) %}
+            {% set files_total_compressed.value = files_total_compressed.value + (f[4]|int if f[4] else 0) %}
             {% if f[5] == 'Cloud Storage' %}
-                {% set cloud_count.value = cloud_count.value + 1 %}
+                {% set files_cloud_count.value = files_cloud_count.value + 1 %}
             {% elif f[5] == 'Local Storage' %}
-                {% set local_count.value = local_count.value + 1 %}
+                {% set files_local_count.value = files_local_count.value + 1 %}
             {% endif %}
         {% endfor %}
 
@@ -630,8 +630,8 @@
                     </div>
                 </div>
 
-                {% if total_original.value > 0 %}
-                {% set saved_pct = ((total_original.value - total_compressed.value) / total_original.value * 100)|round(1) %}
+                {% if files_total_original.value > 0 %}
+                {% set saved_pct = ((files_total_original.value - files_total_compressed.value) / files_total_original.value * 100)|round(1) %}
                 <div class="prog-row">
                     <span>Space saved</span>
                     <span>{{ saved_pct }}%</span>
@@ -642,8 +642,8 @@
                 {% endif %}
 
                 <div style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap;">
-                    <span class="badge b-cloud">☁️ Cloud: {{ cloud_count.value }}</span>
-                    <span class="badge b-local">💻 Local: {{ local_count.value }}</span>
+                    <span class="badge b-cloud">☁️ Cloud: {{ files_cloud_count.value }}</span>
+                    <span class="badge b-local">💻 Local: {{ files_local_count.value }}</span>
                 </div>
 
                 <div class="prog-row" style="margin-top:16px;">
@@ -803,18 +803,13 @@
 
                 <div style="background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:16px 18px;margin-top:6px;">
                     <div class="ii-label">Storage Location</div>
-                    <div style="margin-top:7px;font-size:15px;font-weight:700;">
-                        {% if student[7] == 'Cloud Storage' %}
-                        ☁️ Cloud Storage — AWS S3
-                        {% else %}
-                        💻 Local Server Storage
-                        {% endif %}
+                    <div style="display:flex;gap:8px;margin-top:9px;flex-wrap:wrap;">
+                        <span class="badge b-cloud">☁️ Cloud: {{ cloud_files }}</span>
+                        <span class="badge b-local">💻 Local: {{ local_files }}</span>
                     </div>
-                    {% if student[7] == 'Cloud Storage' %}
-                    <div style="font-size:12px;color:var(--muted);margin-top:4px;">Your file is securely stored on Amazon Web Services S3.</div>
-                    {% else %}
-                    <div style="font-size:12px;color:var(--muted);margin-top:4px;">Your file is stored on the institution's local server.</div>
-                    {% endif %}
+                    <div style="font-size:12px;color:var(--muted);margin-top:8px;">
+                        Files over 5MB are stored on AWS S3 (Cloud); smaller files stay on the local server.
+                    </div>
                 </div>
 
             </div>
@@ -854,9 +849,9 @@ function showTab(name, btn){
 }
 
 /* Progress bars */
-{% if student and student[5] and student[5]|int > 0 %}
-const pct = {{ ((student[5]|int - student[6]|int) / student[5]|int * 100)|round(1) }};
-const compPct = {{ (student[6]|int / student[5]|int * 100)|round(1) }};
+{% if total_original and total_original > 0 %}
+const pct = {{ saved_percent }};
+const compPct = {{ (total_compressed / total_original * 100)|round(1) }};
 setTimeout(()=>{
     const f1=document.getElementById('progFill');
     const f2=document.getElementById('compBar');
