@@ -388,8 +388,14 @@ def student_dashboard():
 
     total_original = 0
     total_compressed = 0
+    photo_count = 0
 
     for f in files:
+        filename = f[2]
+
+        if filename.lower().endswith(('.jpg', '.jpeg', '.png')):
+            photo_count += 1
+
         if f[5] == "Local Storage":
             local_files += 1
 
@@ -402,7 +408,15 @@ def student_dashboard():
         if f[4]:
             total_compressed += int(f[4])
 
+            
+
     saved_bytes = total_original - total_compressed
+
+    total_original_mb = round(total_original / 1024 / 1024, 2)
+
+    total_compressed_mb = round(total_compressed / 1024 / 1024, 2)
+
+    saved_mb = round(saved_bytes / 1024 / 1024, 2)
 
     if total_original > 0:
         saved_percent = round((saved_bytes / total_original) * 100, 1)
@@ -434,10 +448,15 @@ def student_dashboard():
         total_original=total_original,
         total_compressed=total_compressed,
         saved_percent=saved_percent,
+        photo_count=photo_count,
         auto_download_filename=auto_download_filename,
         disk_percent_used=disk_percent_used,
         disk_used_gb=disk_used_gb,
-        disk_total_gb=disk_total_gb
+        disk_total_gb=disk_total_gb,
+
+        total_original_mb=total_original_mb,
+        total_compressed_mb=total_compressed_mb,
+        saved_mb=saved_mb
         
     )
 

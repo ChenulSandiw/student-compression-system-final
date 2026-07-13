@@ -737,17 +737,17 @@
 
         <div class="stat-row" style="margin-bottom:18px;">
             <div class="stat-pill">
-                <div class="stat-pill-val">{{ student[5] }}</div>
-                <div class="stat-pill-label">Original (B)</div>
+                <div class="stat-pill-val">{{ photo_count }}</div>
+                <div class="stat-pill-label">Photos Uploaded</div>
             </div>
             <div class="stat-pill">
-                <div class="stat-pill-val" style="color:var(--green);">{{ student[6] }}</div>
+                <div class="stat-pill-val" style="color:var(--green);">{{  total_compressed }}</div>
                 <div class="stat-pill-label">Compressed (B)</div>
             </div>
             <div class="stat-pill">
-                {% if student[5] and student[5]|int > 0 %}
+                {% if total_original > 0 %}
                 <div class="stat-pill-val" style="color:var(--cyan);">
-                    {{ ((student[5]|int - student[6]|int) / student[5]|int * 100)|round(1) }}%
+                    {{ saved_percent }}%
                 </div>
                 {% else %}
                 <div class="stat-pill-val">0%</div>
@@ -759,14 +759,14 @@
         <div class="card">
             <div class="card-hdr">
                 <div class="card-hdr-icon" style="background:rgba(37,99,235,.1);">💾</div>
-                <h3>Storage Details</h3>
+                <h3>📊 Photo Compression Analytics</h3>
             </div>
             <div class="card-body">
 
                 <div style="margin-bottom:18px;">
                     <div class="prog-row">
-                        <span>Original size</span>
-                        <span>{{ student[5] }} B</span>
+                        <span>📦 Total Original Size</span>
+                        <span>{{ total_original_mb }} MB</span>
                     </div>
                     <div class="prog-track" style="height:10px;">
                         <div style="height:100%;width:100%;background:rgba(37,99,235,.3);border-radius:100px;"></div>
@@ -775,16 +775,31 @@
 
                 <div style="margin-bottom:18px;">
                     <div class="prog-row">
-                        <span>Compressed size</span>
-                        <span>{{ student[6] }} B</span>
+                        <span>🗜 Total Compressed Size</span>
+                        <span>{{ total_compressed_mb }} MB</span>
                     </div>
                     <div class="prog-track" style="height:10px;">
-                        {% if student[5] and student[5]|int > 0 %}
+                        {% if total_original > 0 %}
                         <div class="prog-fill" id="compBar"
                              style="background:linear-gradient(90deg,var(--green),#34D399);"></div>
                         {% endif %}
                     </div>
                 </div>
+
+                <div class="prog-row">
+                    <span>💾 Storage Saved</span>
+                    <span>{{ saved_percent }}%</span>
+                </div>
+
+                <div class="prog-track">
+                    <div class="prog-fill" style="width: {{ saved_percent }}%;"></div>
+                </div>
+
+                <div style="margin-top:8px;font-size:13px;color:var(--green);font-weight:700;">
+                    💾 {{ saved_mb }} MB Saved
+                </div>
+
+                <br>
 
                 <div style="background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:16px 18px;margin-top:6px;">
                     <div class="ii-label">Storage Location</div>
