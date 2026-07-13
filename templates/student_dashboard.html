@@ -653,6 +653,19 @@
                     <span class="badge b-cloud">☁️ Cloud: {{ cloud_count.value }}</span>
                     <span class="badge b-local">💻 Local: {{ local_count.value }}</span>
                 </div>
+
+                <div class="prog-row" style="margin-top:16px;">
+                    <span>🖴 Server Disk Usage</span>
+                    <span>{{ disk_percent_used }}%</span>
+                </div>
+
+                <div class="prog-track">
+                    <div class="prog-fill" style="width:{{ [disk_percent_used, 100]|min }}%;"></div>
+                </div>
+
+                <div style="font-size:12px;color:var(--muted, #6b7280);margin-top:4px;">
+                    {{ disk_used_gb }} GB used of {{ disk_total_gb }} GB
+                </div>
             </div>
         </div>
         {% endif %}

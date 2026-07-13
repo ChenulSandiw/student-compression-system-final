@@ -12,6 +12,7 @@ import math
 import random
 import boto3
 import traceback
+import shutil
 
 from datetime import datetime, timedelta
 
@@ -412,6 +413,14 @@ def student_dashboard():
 
     auto_download_filename = session.pop('auto_download_file', None)
 
+    disk_total, disk_used, disk_free = shutil.disk_usage(app.config['UPLOAD_FOLDER'])
+
+    disk_percent_used = round((disk_used / disk_total) * 100, 1)
+
+    disk_used_gb = round(disk_used / (1024 ** 3), 2)
+    disk_total_gb = round(disk_total / (1024 ** 3), 2)
+
+
     return render_template(
         'student_dashboard.html',
         username=username,
@@ -425,7 +434,10 @@ def student_dashboard():
         total_original=total_original,
         total_compressed=total_compressed,
         saved_percent=saved_percent,
-        auto_download_filename=auto_download_filename
+        auto_download_filename=auto_download_filename,
+        disk_percent_used=disk_percent_used,
+        disk_used_gb=disk_used_gb,
+        disk_total_gb=disk_total_gb
         
     )
 
