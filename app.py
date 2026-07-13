@@ -1400,6 +1400,13 @@ def create_student_files_table():
 
     return "Student Files Table Created Successfully!"
 
+@app.route("/check_uploads")
+def check_uploads():
+
+    files = os.listdir(app.config['UPLOAD_FOLDER'])
+
+    return "<br>".join(files)
+
 
 
 # =========================================
