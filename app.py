@@ -569,6 +569,7 @@ def analytics():
     compressed_size = 0
     local_files = 0
     cloud_files = 0
+    cloud_storage_used_bytes = 0
 
     photo_count = 0
     photo_original = 0
@@ -590,6 +591,10 @@ def analytics():
             local_files += 1
         elif storage_type == 'Cloud Storage':
             cloud_files += 1
+            # Note: uploaded_assignment() uploads the ORIGINAL file to
+            # S3 (compression only happens to the local copy), so
+            # orig is what's actually sitting in the S3 bucket.
+            cloud_storage_used_bytes += orig
 
         ext = filename.split('.')[-1].lower() if filename and '.' in filename else ''
 
@@ -611,6 +616,32 @@ def analytics():
     photo_saved_percentage = pct_saved(photo_original, photo_compressed)
     doc_saved_percentage = pct_saved(doc_original, doc_compressed)
 
+    # ============================
+    # Cloud Storage (AWS S3) Usage vs Quota
+    # ============================
+    cloud_storage_quota_gb = 100
+
+    cloud_storage_quota_bytes = cloud_storage_quota_gb * 1024 * 1024 * 1024
+
+    cloud_storage_used_gb = round(cloud_storage_used_bytes / (1024 ** 3), 2)
+
+    cloud_storage_remaining_gb = round(
+        (cloud_storage_quota_bytes - cloud_storage_used_bytes) / (1024 ** 3), 2
+    )
+
+    if cloud_storage_remaining_gb < 0:
+        cloud_storage_remaining_gb = 0
+
+    if cloud_storage_quota_bytes > 0:
+        cloud_storage_percent_used = round(
+            (cloud_storage_used_bytes / cloud_storage_quota_bytes) * 100, 2
+        )
+    else:
+        cloud_storage_percent_used = 0
+
+    if cloud_storage_percent_used > 100:
+        cloud_storage_percent_used = 100
+
     return render_template(
         "analytics.html",
 
@@ -629,6 +660,11 @@ def analytics():
         doc_original=doc_original,
         doc_compressed=doc_compressed,
         doc_saved_percentage=doc_saved_percentage,
+
+        cloud_storage_quota_gb=cloud_storage_quota_gb,
+        cloud_storage_used_gb=cloud_storage_used_gb,
+        cloud_storage_remaining_gb=cloud_storage_remaining_gb,
+        cloud_storage_percent_used=cloud_storage_percent_used,
 
         photo_count=photo_count,
         photo_original=photo_original,
