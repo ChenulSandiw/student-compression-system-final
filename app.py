@@ -1008,11 +1008,13 @@ Smart Student Compression System
     log_activity(session['username'], "ADD_USER")
 
     if email_sent:
-        flash("User added successfully and email sent.", "success")
+        flash("User added successfully and account email sent.", "success")
     else:
         flash("User added successfully, but the account email could not be sent.", "warning")
 
     return redirect('/admin/users')
+
+  
 
 
 @app.route('/admin/delete_user/<int:id>')
