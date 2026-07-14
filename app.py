@@ -14,6 +14,7 @@ import random
 import boto3
 import traceback
 import shutil
+import mimetypes
 import requests
 
 from datetime import datetime, timedelta
@@ -1439,7 +1440,45 @@ def preview_file(filename):
         filename
     )
 
+    cursor = mysql.connection.cursor()
+
+    cursor.execute("""
+        SELECT storage_type
+        FROM student_files
+        WHERE filename=%s
+    """, (filename,))
+
+    result = cursor.fetchone()
+
+    cursor.close()
+
+    storage_type = result[0] if result else "Local Storage"
+
     extension = filename.split('.')[-1].lower()
+
+
+    # ==========================
+    # Cloud Storage Preview
+    # ==========================
+    if storage_type == "Cloud Storage":
+
+         content_type, _ = mimetypes.guess_type(filename)
+
+         if content_type is None:
+             content_type = "application/octet-stream"
+
+         presigned_url = s3.generate_presigned_url(
+             'get_object',
+              Params={
+                  'Bucket': AWS_BUCKET,
+                  'Key': filename,
+                  'ResponseContentDisposition': 'inline',
+                  'ResponseContentType': content_type
+              },
+              ExpiresIn=300
+         )
+
+         return redirect(presigned_url)
 
     # PDF Preview
     if extension == 'pdf':
@@ -1567,10 +1606,18 @@ def upload_assignment():
 
         storage_type = "Cloud Storage"
 
+        content_type, _ = mimetypes.guess_type(filepath)
+
+        if content_type is None:
+            content_type = "application/octet-stream"
+
         s3.upload_file(
             filepath,
             AWS_BUCKET,
-            filename
+            filename,
+            ExtraArgs={
+                "ContentType": content_type
+            }
         )
 
     else:
@@ -1621,10 +1668,40 @@ def upload_assignment():
 @app.route('/download/<filename>')
 def download_file(filename):
 
-        if 'logged_in' not in session:
-            return redirect('/login')
+    if 'logged_in' not in session:
+        return redirect('/login')
 
-        return send_from_directory(
+    cursor = mysql.connection.cursor()
+
+    cursor.execute("""
+        SELECT storage_type
+        FROM student_files
+        WHERE filename=%s
+    """, (filename,))
+
+    result = cursor.fetchone()
+
+    cursor.close()
+
+    storage_type = result[0] if result else "Local Storage"
+
+    # Cloud Storage
+    if storage_type == "Cloud Storage":
+
+        presigned_url = s3.generate_presigned_url(
+            'get_object',
+            Params={
+                'Bucket': AWS_BUCKET,
+                'Key': filename,
+                'ResponseContentDisposition': 'attachment'
+            },
+            ExpiresIn=300
+        )
+
+        return redirect(presigned_url)
+
+    # Local Storage
+    return send_from_directory(
         app.config['UPLOAD_FOLDER'],
         filename,
         as_attachment=True
