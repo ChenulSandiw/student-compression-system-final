@@ -403,6 +403,9 @@ def student_dashboard():
     
     username = session['username']
 
+    active_tab = request.args.get('tab', 'profile')
+
+
     cursor = mysql.connection.cursor()
 
     cursor.execute("""
@@ -499,7 +502,9 @@ def student_dashboard():
 
         total_original_mb=total_original_mb,
         total_compressed_mb=total_compressed_mb,
-        saved_mb=saved_mb
+        saved_mb=saved_mb,
+
+        active_tab=active_tab
         
     )
 

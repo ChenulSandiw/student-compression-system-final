@@ -319,8 +319,9 @@
   {% if messages %}
     <div id="toastBox" style="position:fixed;top:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:10px;">
       {% for category, message in messages %}
-        <div class="app-toast" style="background:{{ '#16a34a' if category=='success' else '#2563eb' }};color:#fff;padding:14px 20px;border-radius:10px;box-shadow:0 8px 20px rgba(0,0,0,.15);font-size:14px;font-weight:600;opacity:0;transform:translateX(20px);transition:all .3s ease;">
-          {{ '✅' if category=='success' else 'ℹ️' }} {{ message }}
+        <div class="app-toast" style="background:{{ '#16a34a' if category=='success' else '#2563eb' }};color:#fff;padding:14px 20px;border-radius:10px;box-shadow:0 8px 20px rgba(0,0,0,.15);font-size:14px;font-weight:600;display:flex;align-items:center;gap:10px;">
+          <span>{{ '✅' if category=='success' else 'ℹ️' }} {{ message }}</span>
+          <span onclick="this.parentElement.remove()" style="cursor:pointer;font-weight:900;">✕</span>
         </div>
       {% endfor %}
     </div>
@@ -425,22 +426,22 @@
 
     <!-- TABS -->
     <div class="tabs au d1">
-        <button class="tab active" onclick="showTab('profile',this)">
+        <button class="tab {{ 'active' if active_tab=='profile' else '' }}" onclick="showTab('profile',this)">
             <span class="tab-icon">👤</span> My Profile
         </button>
-        <button class="tab" onclick="showTab('academic',this)">
+        <button class="tab {{ 'active' if active_tab=='academic' else '' }}" onclick="showTab('academic',this)">
             <span class="tab-icon">🎓</span> Academic
         </button>
-        <button class="tab" onclick="showTab('files',this)">
+        <button class="tab {{ 'active' if active_tab=='files' else '' }}" onclick="showTab('files',this)">
             <span class="tab-icon">📁</span> My Files
         </button>
-        <button class="tab" onclick="showTab('storage',this)">
+        <button class="tab {{ 'active' if active_tab=='storage' else '' }}" onclick="showTab('storage',this)">
             <span class="tab-icon">🗜</span> Photo Analytics
         </button>
     </div>
 
     <!-- ══ TAB: PROFILE ══ -->
-    <div class="tab-page active" id="tab-profile">
+    <div class="tab-page {{ 'active' if active_tab=='profile' else '' }}" id="tab-profile">
 
         <div class="card au d2">
             <div class="card-hdr">
@@ -515,7 +516,7 @@
     </div>
 
     <!-- ══ TAB: ACADEMIC ══ -->
-    <div class="tab-page" id="tab-academic">
+    <div class="tab-page {{ 'active' if active_tab=='academic' else '' }}" id="tab-academic">
 
         <div class="card">
             <div class="card-hdr">
@@ -551,7 +552,7 @@
     </div>
 
     <!-- ══ TAB: FILES ══ -->
-    <div class="tab-page" id="tab-files">
+    <div class="tab-page {{ 'active' if active_tab=='files' else '' }}" id="tab-files">
 
         <div class="card">
 
@@ -757,7 +758,7 @@
     </div>
 
     <!-- ══ TAB: STORAGE ══ -->
-    <div class="tab-page" id="tab-storage">
+    <div class="tab-page {{ 'active' if active_tab=='storage' else '' }}" id="tab-storage">
 
         <div class="stat-row" style="margin-bottom:18px;">
             <div class="stat-pill">
