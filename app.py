@@ -1576,6 +1576,26 @@ MAIL_USERNAME = {app.config['MAIL_USERNAME']} <br><br>
 MAIL_PASSWORD = {app.config['MAIL_PASSWORD']}
 """
 
+@app.route("/mail_send_test")
+def mail_send_test():
+
+    try:
+
+        msg = Message(
+            subject="Test Email",
+            recipients=["chenulsandiw760@gmail.com"]
+        )
+
+        msg.body = "Hello from Smart Student System"
+
+        mail.send(msg)
+
+        return "Email Sent Successfully"
+
+    except Exception as e:
+
+        return str(e)
+
 
 
 # =========================================
