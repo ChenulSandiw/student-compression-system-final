@@ -58,6 +58,7 @@
         .filter-btn.active,.filter-btn:hover{background:var(--blue);color:#fff;border-color:var(--blue);}
         @keyframes slideUp{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
         .au{animation:slideUp .48s ease both;} .d1{animation-delay:.07s;}
+        @keyframes pulseDot{0%,100%{opacity:1;}50%{opacity:.35;}}
     </style>
 </head>
 <body>
@@ -71,10 +72,9 @@
         <a href="/dashboard"><span class="nav-icon">🏠</span> Dashboard</a>
         <a href="/add_student"><span class="nav-icon">➕</span> Add Student</a>
         <a href="/view_students"><span class="nav-icon">👨‍🎓</span> Students</a>
-        <div class="sb-label">Admin</div>
         <a href="/admin/users"><span class="nav-icon">👥</span> Users</a>
         <a href="/admin/activity_log" class="active"><span class="nav-icon">📋</span> Activity Log</a>
-        <a href="/change_password"><span class="nav-icon">🔑</span> Password</a>
+        <a href="/change_password"><span class="nav-icon">🔑</span> Change Password</a>
         <div class="sb-label">Tools</div>
         <a href="/analytics"><span class="nav-icon">📊</span> Analytics</a>
         <a href="/export_pdf"><span class="nav-icon">📄</span> Reports</a>
@@ -90,7 +90,13 @@
             <h1>📋 Activity Log</h1>
             <p>Last 200 system events</p>
         </div>
-        <button class="dark-toggle" onclick="toggleDark()"><span id="di">🌙</span> Dark Mode</button>
+        <div style="display:flex;align-items:center;gap:10px;">
+            <span style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--green);">
+                <span style="width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block;animation:pulseDot 1.6s infinite;"></span>
+                Live — refreshes every 30s
+            </span>
+            <button class="dark-toggle" onclick="toggleDark()"><span id="di">🌙</span> Dark Mode</button>
+        </div>
     </div>
 
     <div class="page-header au">
@@ -123,7 +129,7 @@
                 </thead>
                 <tbody>
     {% for log in logs %}
-    <tr>
+    <tr data-action="{{ log[2] }}">
         <td style="color:var(--muted);font-weight:600;">{{ log[0] }}</td>
 
         <!-- Time -->
@@ -138,7 +144,13 @@
 
         <!-- Role -->
         <td>
-            Admin
+            {% if user_roles.get(log[1]) == 'admin' %}
+                <span class="badge log-add">👑 Admin</span>
+            {% elif user_roles.get(log[1]) == 'student' %}
+                <span class="badge log-default">👤 Student</span>
+            {% else %}
+                <span class="badge log-default">—</span>
+            {% endif %}
         </td>
 
         <!-- Action -->
@@ -216,11 +228,17 @@ function filterLogs(type, btn) {
         const action = row.dataset.action || '';
         if (type === 'ALL') { row.style.display = ''; return; }
         if (type === 'LOGIN'   && (action.includes('LOGIN') || action.includes('LOGOUT') || action.includes('LOCKED'))) { row.style.display=''; return; }
-        if (type === 'STUDENT' && action.includes('STUDENT')) { row.style.display=''; return; }
+        if (type === 'STUDENT' && (action.includes('STUDENT') || action.includes('ASSIGNMENT'))) { row.style.display=''; return; }
         if (type === 'USER'    && (action.includes('USER') || action.includes('PASSWORD'))) { row.style.display=''; return; }
         row.style.display = 'none';
     });
 }
+
+/* Auto-refresh every 30s so new activity shows up without a manual
+   reload. */
+setInterval(() => {
+    window.location.reload();
+}, 30000);
 </script>
 </body>
 </html>

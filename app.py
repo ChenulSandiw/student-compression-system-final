@@ -1331,11 +1331,18 @@ def activity_log():
 
     logs = cursor.fetchall()
 
+    # Real username -> role lookup (instead of hardcoding "Admin" for
+    # every row — some actions, like UPLOAD_ASSIGNMENT, are logged by
+    # the student's own account, not an admin).
+    cursor.execute("SELECT username, role FROM users")
+    user_roles = {row[0]: row[1] for row in cursor.fetchall()}
+
     cursor.close()
 
     return render_template(
         "activity_log.html",
-        logs=logs
+        logs=logs,
+        user_roles=user_roles
     )
 
 @app.route('/change_password', methods=['GET', 'POST'])
