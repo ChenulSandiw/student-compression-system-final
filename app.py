@@ -1567,6 +1567,15 @@ def create_student_files_table():
 
     return "Student Files Table Created Successfully!"
 
+@app.route("/mail_test")
+def mail_test():
+
+    return f"""
+MAIL_USERNAME = {app.config['MAIL_USERNAME']} <br><br>
+
+MAIL_PASSWORD = {app.config['MAIL_PASSWORD']}
+"""
+
 
 
 # =========================================
