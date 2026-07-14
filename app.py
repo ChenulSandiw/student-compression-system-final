@@ -14,8 +14,7 @@ import random
 import boto3
 import traceback
 import shutil
-import smtplib
-from email.message import EmailMessage
+import requests
 
 from datetime import datetime, timedelta
 
@@ -945,50 +944,58 @@ def add_user():
     mysql.connection.commit()
 
     # =========================================
-    # Send Account Details Email
+    # Send Account Details Email (via Brevo HTTP API)
     # =========================================
-    # Using raw smtplib here (instead of flask_mail's mail.send) so we
-    # can set an explicit socket timeout. Some hosts block/slow-walk
-    # outbound SMTP (port 587) — without a timeout that hang can take
-    # down the whole worker instead of just failing this one email.
+    # Render's free tier blocks outbound SMTP ports (25, 465, 587), so
+    # smtplib/Gmail cannot send from here. Brevo's REST API works over
+    # normal HTTPS (port 443), which Render does NOT block.
 
     email_sent = False
 
-    email_body = f"""
-Dear Student,
-
-Your account has been created successfully.
-
-====================================
-
-Username : {username}
-Password : {password}
-Role     : {role}
-
-====================================
-
-Login Here:
-https://student-compression-system.onrender.com/login
-
-Please change your password after your first login.
-
-Thank you,
-Smart Student Compression System
-"""
+    email_body_html = f"""
+    <p>Dear Student,</p>
+    <p>Your account has been created successfully.</p>
+    <hr>
+    <p>
+        <b>Username:</b> {username}<br>
+        <b>Password:</b> {password}<br>
+        <b>Role:</b> {role}
+    </p>
+    <hr>
+    <p>
+        Login Here:
+        <a href="https://student-compression-system.onrender.com/login">
+            https://student-compression-system.onrender.com/login
+        </a>
+    </p>
+    <p>Please change your password after your first login.</p>
+    <p>Thank you,<br>Smart Student Compression System</p>
+    """
 
     try:
-        email_msg = EmailMessage()
-        email_msg['Subject'] = "Smart Student Compression System - Your Account"
-        email_msg['From'] = app.config['MAIL_USERNAME']
-        email_msg['To'] = student_email
-        email_msg.set_content(email_body)
+        response = requests.post(
+            "https://api.brevo.com/v3/smtp/email",
+            headers={
+                "api-key": os.environ.get('BREVO_API_KEY'),
+                "Content-Type": "application/json",
+                "accept": "application/json"
+            },
+            json={
+                "sender": {
+                    "name": "Smart Student Compression System",
+                    "email": os.environ.get('BREVO_SENDER_EMAIL')
+                },
+                "to": [{"email": student_email}],
+                "subject": "Smart Student Compression System - Your Account",
+                "htmlContent": email_body_html
+            },
+            timeout=10
+        )
 
-        with smtplib.SMTP(app.config['MAIL_SERVER'], app.config['MAIL_PORT'], timeout=10) as server:
-            server.starttls()
-            server.login(app.config['MAIL_USERNAME'], app.config['MAIL_PASSWORD'])
-            server.send_message(email_msg)
-
-        email_sent = True
+        if response.status_code in (200, 201):
+            email_sent = True
+        else:
+            print("Brevo Error:", response.status_code, response.text)
 
     except Exception as e:
         import traceback
@@ -1589,6 +1596,55 @@ def mail_send_test():
     except Exception as e:
 
         return str(e)
+
+
+@app.route("/debug_brevo")
+def debug_brevo():
+
+    api_key = os.environ.get('BREVO_API_KEY')
+    sender_email = os.environ.get('BREVO_SENDER_EMAIL')
+
+    result = "<div style='font-family:sans-serif;padding:30px;max-width:700px;'>"
+    result += "<h2>🔍 Brevo Debug</h2>"
+
+    result += f"<p><b>BREVO_API_KEY set?</b> {'Yes, starts with ' + api_key[:10] if api_key else 'NO - missing!'}</p>"
+    result += f"<p><b>BREVO_SENDER_EMAIL set?</b> {sender_email if sender_email else 'NO - missing!'}</p>"
+
+    if not api_key or not sender_email:
+        result += "<p style='color:red;'>⚠️ One or both environment variables are missing on Render. Add them in Render → Environment tab.</p>"
+        result += "</div>"
+        return result
+
+    try:
+        response = requests.post(
+            "https://api.brevo.com/v3/smtp/email",
+            headers={
+                "api-key": api_key,
+                "Content-Type": "application/json",
+                "accept": "application/json"
+            },
+            json={
+                "sender": {
+                    "name": "Smart Student Compression System",
+                    "email": sender_email
+                },
+                "to": [{"email": sender_email}],
+                "subject": "Brevo Debug Test",
+                "htmlContent": "<p>This is a test email from /debug_brevo.</p>"
+            },
+            timeout=10
+        )
+
+        result += f"<p><b>Status Code:</b> {response.status_code}</p>"
+        result += f"<p><b>Response Body:</b></p><pre style='background:#f0f0f0;padding:15px;border-radius:8px;'>{response.text}</pre>"
+
+    except Exception as e:
+        import traceback
+        result += f"<p style='color:red;'><b>Exception:</b> {str(e)}</p>"
+        result += f"<pre style='background:#fee;padding:15px;border-radius:8px;'>{traceback.format_exc()}</pre>"
+
+    result += "</div>"
+    return result
 
 
 

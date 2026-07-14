@@ -14,3 +14,4 @@ Werkzeug==3.1.8
 gunicorn==23.0.0
 reportlab==4.4.4
 boto3==1.40.0
+requests==2.32.3
