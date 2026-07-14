@@ -136,29 +136,10 @@
                 <span class="tag">{{ doc_count }} files</span>
             </div>
 
-            <div class="row g-4 align-items-center">
-                <div class="col-md-5">
-                    <div class="mini-stat-row">
-                        <div class="mini-stat">
-                            <div class="mini-stat-val">{{ doc_count }}</div>
-                            <div class="mini-stat-label">Files</div>
-                        </div>
-                        <div class="mini-stat">
-                            <div class="mini-stat-val" style="color:var(--green);">{{ doc_saved_percentage }}%</div>
-                            <div class="mini-stat-label">Saved</div>
-                        </div>
-                        <div class="mini-stat">
-                            <div class="mini-stat-val">{{ doc_original }}</div>
-                            <div class="mini-stat-label">Original (B)</div>
-                        </div>
-                    </div>
-                    <div style="font-size:12px;color:var(--muted);">
-                        Original {{ doc_original }} B → Compressed {{ doc_compressed }} B, all students combined.
-                    </div>
-                </div>
-                <div class="col-md-7">
+            <div class="row">
+                <div class="col-12">
                     {% if doc_count > 0 %}
-                        <canvas id="docChart" height="180"></canvas>
+                        <canvas id="docChart" height="140"></canvas>
                     {% else %}
                         <div class="empty-note">No assignment files (PDF / DOCX) uploaded yet.</div>
                     {% endif %}
