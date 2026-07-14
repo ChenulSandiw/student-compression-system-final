@@ -1910,6 +1910,22 @@ def debug_brevo():
     result += "</div>"
     return result
 
+# =========================================
+# Clear Uploaded Files (Temporary)
+# =========================================
+@app.route('/clear_files')
+def clear_files():
+
+    cursor = mysql.connection.cursor()
+
+    cursor.execute("DELETE FROM student_files")
+
+    mysql.connection.commit()
+
+    cursor.close()
+
+    return "✅ student_files table cleared successfully!"
+
 
 
 # =========================================
