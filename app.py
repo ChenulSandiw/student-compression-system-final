@@ -999,7 +999,9 @@ Smart Student Compression System
         email_sent = True
 
     except Exception as e:
-        print("Email Error:", e)
+        import traceback
+        traceback.print_exc()
+        print("Email Error:", str(e))
 
     cursor.close()
 
