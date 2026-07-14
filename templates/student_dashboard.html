@@ -317,7 +317,7 @@
 <!-- TOAST NOTIFICATION -->
 {% with messages = get_flashed_messages(with_categories=true) %}
   {% if messages %}
-    <div id="toastBox" style="position:fixed;top:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:10px;">
+    <div id="toastBox" style="position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:9999;display:flex;flex-direction:column;gap:10px;align-items:center;">
       {% for category, message in messages %}
         <div class="app-toast" style="background:{{ '#16a34a' if category=='success' else '#2563eb' }};color:#fff;padding:14px 20px;border-radius:10px;box-shadow:0 8px 20px rgba(0,0,0,.15);font-size:14px;font-weight:600;display:flex;align-items:center;gap:10px;">
           <span>{{ '✅' if category=='success' else 'ℹ️' }} {{ message }}</span>
