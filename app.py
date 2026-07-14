@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, session, make_response, send_from_directory, send_file, flash
+from flask_mail import Mail, Message
 from flask_mysqldb import MySQL
 from PIL import Image
 from werkzeug.utils import secure_filename
@@ -17,6 +18,14 @@ import shutil
 from datetime import datetime, timedelta
 
 app = Flask(__name__)
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME')
+app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')
+app.config['MAIL_DEFAULT_SENDER'] = os.environ.get('MAIL_USERNAME')
+
+mail = Mail(app)
 
 app.config["PROPAGATE_EXCEPTIONS"] = True
 app.debug = True
@@ -912,6 +921,22 @@ def add_user():
         cursor.close()
         flash("Username already exists.", "danger")
         return redirect('/admin/users')
+    
+    # Get student email
+    cursor.execute("""
+        SELECT email
+        FROM students
+        WHERE username=%s
+    """, (username,))
+
+    student_data = cursor.fetchone()
+
+    if not student_data:
+        cursor.close()
+        flash("Student email not found.", "danger")
+        return redirect('/admin/users')
+
+    student_email = student_data[0]
 
     password_hash = generate_password_hash(password)
 
@@ -925,13 +950,51 @@ def add_user():
     )
 
     mysql.connection.commit()
+
+    # =========================================
+    # Send Account Details Email
+    # =========================================
+    try:
+        msg = Message(
+            subject="Smart Student Compression System - Your Account",
+            recipients=[student_email]
+        )
+
+        msg.body = f"""
+Dear Student,
+
+Your account has been created successfully.
+
+====================================
+
+Username : {username}
+Password : {password}
+Role     : {role}
+
+====================================
+
+Login Here:
+https://student-compression-system.onrender.com/login
+
+Please change your password after your first login.
+
+Thank you,
+Smart Student Compression System
+"""
+
+        mail.send(msg)
+
+    except Exception as e:
+        print("Email Error:", e)
+
     cursor.close()
 
     log_activity(session['username'], "ADD_USER")
 
-    flash("User added successfully.", "success")
+    flash("User added successfully and email sent.", "success")
 
     return redirect('/admin/users')
+
 
 @app.route('/admin/delete_user/<int:id>')
 def delete_user(id):
