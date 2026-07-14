@@ -783,14 +783,85 @@ def student_profile(id):
 
     student = cursor.fetchone()
 
+    if not student:
+        cursor.close()
+        return "Student Not Found", 404
+
+    # Look up the student's username explicitly (by column name, not
+    # index) so this keeps working regardless of column order.
+    cursor.execute(
+        "SELECT username FROM students WHERE id=%s",
+        [id]
+    )
+
+    username_row = cursor.fetchone()
+    username = username_row[0] if username_row else None
+
+    # =========================================
+    # All Uploaded Files (real-time, from student_files)
+    # =========================================
+    files = []
+
+    if username:
+        cursor.execute("""
+            SELECT *
+            FROM student_files
+            WHERE username=%s
+            ORDER BY uploaded_at DESC
+        """, [username])
+
+        files = cursor.fetchall()
+
     cursor.close()
 
-    if not student:
-        return "Student Not Found", 404
+    total_files = len(files)
+
+    local_files = 0
+    cloud_files = 0
+
+    total_original = 0
+    total_compressed = 0
+
+    for f in files:
+        if f[5] == "Local Storage":
+            local_files += 1
+        elif f[5] == "Cloud Storage":
+            cloud_files += 1
+
+        if f[3]:
+            total_original += int(f[3])
+
+        if f[4]:
+            total_compressed += int(f[4])
+
+    saved_bytes = total_original - total_compressed
+
+    if total_original > 0:
+        saved_percent = round((saved_bytes / total_original) * 100, 1)
+    else:
+        saved_percent = 0
+
+    disk_total, disk_used, disk_free = shutil.disk_usage(app.config['UPLOAD_FOLDER'])
+
+    disk_percent_used = round((disk_used / disk_total) * 100, 1)
+    disk_used_gb = round(disk_used / (1024 ** 3), 2)
+    disk_total_gb = round(disk_total / (1024 ** 3), 2)
 
     return render_template(
         "student_profile.html",
-        student=student
+        student=student,
+
+        files=files,
+        total_files=total_files,
+        local_files=local_files,
+        cloud_files=cloud_files,
+        total_original=total_original,
+        total_compressed=total_compressed,
+        saved_percent=saved_percent,
+
+        disk_percent_used=disk_percent_used,
+        disk_used_gb=disk_used_gb,
+        disk_total_gb=disk_total_gb
     )
 
 

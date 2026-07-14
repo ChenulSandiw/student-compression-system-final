@@ -173,6 +173,9 @@
         .cstat-val { font-size: 18px; font-weight: 900; color: var(--text); }
         .cstat-label { font-size: 10px; color:var(--muted); font-weight:700; text-transform:uppercase; letter-spacing:.6px; margin-top:3px; }
 
+        .prog-track { height:8px; background:rgba(37,99,235,.08); border-radius:100px; overflow:hidden; }
+        .prog-fill { height:100%; border-radius:100px; background:linear-gradient(90deg,var(--blue),var(--cyan)); }
+
         @keyframes slideUp { from{opacity:0;transform:translateY(20px);} to{opacity:1;transform:translateY(0);} }
         @keyframes fadeIn  { from{opacity:0;} to{opacity:1;} }
         @keyframes scaleIn { from{opacity:0;transform:scale(.94);} to{opacity:1;transform:scale(1);} }
@@ -360,77 +363,98 @@
         <!-- RIGHT COLUMN -->
         <div class="col-lg-5">
 
-            <!-- Document -->
-<div class="card-glass info-section sc d1">
-    <h5>📁 Uploaded Document</h5>
+            <!-- Upload Summary -->
+            <div class="card-glass info-section sc d1">
+                <h5>📊 Upload Summary</h5>
 
-    {% if student[4] %}
-
-        {% set extension = student[4].split('.')[-1].lower() %}
-
-        <div class="file-card">
-
-            {% if extension in ['jpg','jpeg','png'] %}
-                <div class="file-icon" style="background:rgba(139,92,246,.12);color:#8B5CF6;">🖼️</div>
-
-            {% elif extension == 'pdf' %}
-                <div class="file-icon" style="background:rgba(239,68,68,.12);color:#EF4444;">📕</div>
-
-            {% else %}
-                <div class="file-icon" style="background:rgba(37,99,235,.12);color:#2563EB;">📘</div>
-
-            {% endif %}
-
-            <div style="min-width:0;">
-                <div class="file-name">{{ student[4] }}</div>
-
-                <div class="file-meta">
-                    {{ student[6] }} bytes (compressed)
+                <div class="compress-stats">
+                    <div class="cstat">
+                        <div class="cstat-val">{{ total_files }}</div>
+                        <div class="cstat-label">Total Files</div>
+                    </div>
+                    <div class="cstat">
+                        <div class="cstat-val" style="color:var(--green);">{{ saved_percent }}%</div>
+                        <div class="cstat-label">Space Saved</div>
+                    </div>
+                    <div class="cstat">
+                        <div class="cstat-val" style="color:var(--cyan);">{{ total_compressed }}</div>
+                        <div class="cstat-label">Compressed (B)</div>
+                    </div>
                 </div>
 
-                {% if student[7] == 'Cloud Storage' %}
-                    <span class="badge-storage badge-cloud">☁️ Cloud Storage</span>
-                {% else %}
-                    <span class="badge-storage badge-local">💻 Local Storage</span>
-                {% endif %}
-            </div>
+                <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;">
+                    <span class="badge-storage badge-cloud">☁️ Cloud: {{ cloud_files }}</span>
+                    <span class="badge-storage badge-local">💻 Local: {{ local_files }}</span>
+                </div>
 
-        </div>
-
-        <div class="file-actions mt-3" style="margin-left:0;">
-            <a href="/preview/{{ student[4] }}" target="_blank" class="file-btn preview">
-                👁 Preview
-            </a>
-
-            <a href="/download/{{ student[4] }}" class="file-btn download">
-                ⬇️ Download
-            </a>
-        </div>
-
-        <div class="compress-stats">
-
-            <div class="cstat">
-                <div class="cstat-val">{{ student[5] }}</div>
-                <div class="cstat-label">Original (B)</div>
-            </div>
-
-            <div class="cstat">
-                <div class="cstat-val">{{ student[6] }}</div>
-                <div class="cstat-label">Compressed (B)</div>
-            </div>
-
-            <div class="cstat">
-                {% if student[5] and student[5] > 0 %}
-                    <div class="cstat-val" style="color:var(--green);">
-                        {{ ((student[5]-student[6]) / student[5] * 100) | round(1) }}%
+                <div style="margin-top:16px;">
+                    <div style="display:flex;justify-content:space-between;font-size:11px;font-weight:700;color:var(--muted);margin-bottom:5px;">
+                        <span>🖴 Server Disk Usage</span>
+                        <span>{{ disk_percent_used }}%</span>
                     </div>
-                {% else %}
-                    <div class="cstat-val">0%</div>
-                {% endif %}
-                <div class="cstat-label">Saved</div>
+                    <div class="prog-track">
+                        <div class="prog-fill" style="width:{{ [disk_percent_used, 100]|min }}%;"></div>
+                    </div>
+                    <div style="font-size:11px;color:var(--muted);margin-top:4px;">
+                        {{ disk_used_gb }} GB used of {{ disk_total_gb }} GB
+                    </div>
+                </div>
             </div>
 
-        </div>
+            <!-- Uploaded Documents -->
+<div class="card-glass info-section sc d1">
+    <h5>📁 Uploaded Documents ({{ total_files }})</h5>
+
+    {% if files %}
+
+        {% for f in files %}
+
+            {% if f[2] %}
+                {% set extension = f[2].split('.')[-1].lower() %}
+            {% else %}
+                {% set extension = "" %}
+            {% endif %}
+
+            <div class="file-card" style="{% if not loop.first %}margin-top:12px;{% endif %}">
+
+                {% if extension in ['jpg','jpeg','png'] %}
+                    <div class="file-icon" style="background:rgba(139,92,246,.12);color:#8B5CF6;">🖼️</div>
+
+                {% elif extension == 'pdf' %}
+                    <div class="file-icon" style="background:rgba(239,68,68,.12);color:#EF4444;">📕</div>
+
+                {% else %}
+                    <div class="file-icon" style="background:rgba(37,99,235,.12);color:#2563EB;">📘</div>
+
+                {% endif %}
+
+                <div style="min-width:0;flex:1;">
+                    <div class="file-name">{{ f[2] }}</div>
+
+                    <div class="file-meta">
+                        {{ f[4] }} bytes (compressed)
+                    </div>
+
+                    {% if f[5] == 'Cloud Storage' %}
+                        <span class="badge-storage badge-cloud">☁️ Cloud Storage</span>
+                    {% else %}
+                        <span class="badge-storage badge-local">💻 Local Storage</span>
+                    {% endif %}
+                </div>
+
+                <div class="file-actions">
+                    <a href="/preview/{{ f[2] }}" target="_blank" class="file-btn preview">
+                        👁 Preview
+                    </a>
+
+                    <a href="/download/{{ f[2] }}" class="file-btn download">
+                        ⬇️ Download
+                    </a>
+                </div>
+
+            </div>
+
+        {% endfor %}
 
     {% else %}
 
