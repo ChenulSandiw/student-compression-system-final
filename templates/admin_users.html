@@ -102,9 +102,14 @@
             {% for category, message in messages %}
 
             <div class="alert alert-{{ category }}" role="alert"
-                 style="margin-bottom:20px;border-radius:12px;padding:15px;font-weight:600;">
+                 style="margin-bottom:20px;border-radius:12px;padding:15px 44px 15px 15px;font-weight:600;position:relative;">
 
                 {{ message }}
+
+                <span onclick="this.parentElement.remove()"
+                      style="position:absolute;top:50%;right:15px;transform:translateY(-50%);cursor:pointer;font-weight:900;font-size:18px;line-height:1;">
+                    ✕
+                </span>
 
             </div>
 
