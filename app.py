@@ -532,35 +532,108 @@ def analytics():
 
     cursor = mysql.connection.cursor()
 
-    # Total Students
+    # ============================
+    # Students
+    # ============================
     cursor.execute("SELECT COUNT(*) FROM students")
     total_students = cursor.fetchone()[0]
 
-    # Original Size
-    cursor.execute("SELECT SUM(original_size) FROM students")
-    original_size = cursor.fetchone()[0] or 0
+    cursor.execute("""
+        SELECT
+            COALESCE(NULLIF(TRIM(course), ''), 'Not Set') AS course_name,
+            COUNT(*)
+        FROM students
+        GROUP BY course_name
+        ORDER BY COUNT(*) DESC
+    """)
+    course_rows = cursor.fetchall()
 
-    # Compressed Size
-    cursor.execute("SELECT SUM(compressed_size) FROM students")
-    compressed_size = cursor.fetchone()[0] or 0
+    course_labels = [row[0] for row in course_rows]
+    course_counts = [row[1] for row in course_rows]
 
-    # Saved Percentage
-    if original_size > 0:
-        saved_percentage = round(
-            ((original_size - compressed_size) / original_size) * 100,
-            2
-        )
-    else:
-        saved_percentage = 0
+    # ============================
+    # All Files (real-time, from student_files — every student)
+    # ============================
+    cursor.execute("""
+        SELECT filename, original_size, compressed_size, storage_type
+        FROM student_files
+    """)
+    all_files = cursor.fetchall()
 
     cursor.close()
 
+    photo_exts = ('jpg', 'jpeg', 'png', 'gif', 'webp')
+
+    total_files = len(all_files)
+    original_size = 0
+    compressed_size = 0
+    local_files = 0
+    cloud_files = 0
+
+    photo_count = 0
+    photo_original = 0
+    photo_compressed = 0
+
+    doc_count = 0
+    doc_original = 0
+    doc_compressed = 0
+
+    for filename, orig, comp, storage_type in all_files:
+
+        orig = int(orig) if orig else 0
+        comp = int(comp) if comp else 0
+
+        original_size += orig
+        compressed_size += comp
+
+        if storage_type == 'Local Storage':
+            local_files += 1
+        elif storage_type == 'Cloud Storage':
+            cloud_files += 1
+
+        ext = filename.split('.')[-1].lower() if filename and '.' in filename else ''
+
+        if ext in photo_exts:
+            photo_count += 1
+            photo_original += orig
+            photo_compressed += comp
+        else:
+            doc_count += 1
+            doc_original += orig
+            doc_compressed += comp
+
+    def pct_saved(orig, comp):
+        if orig > 0:
+            return round(((orig - comp) / orig) * 100, 1)
+        return 0
+
+    saved_percentage = pct_saved(original_size, compressed_size)
+    photo_saved_percentage = pct_saved(photo_original, photo_compressed)
+    doc_saved_percentage = pct_saved(doc_original, doc_compressed)
+
     return render_template(
         "analytics.html",
+
+        total_students=total_students,
+        course_labels=course_labels,
+        course_counts=course_counts,
+
+        total_files=total_files,
         original_size=original_size,
         compressed_size=compressed_size,
         saved_percentage=saved_percentage,
-        total_students=total_students
+        local_files=local_files,
+        cloud_files=cloud_files,
+
+        doc_count=doc_count,
+        doc_original=doc_original,
+        doc_compressed=doc_compressed,
+        doc_saved_percentage=doc_saved_percentage,
+
+        photo_count=photo_count,
+        photo_original=photo_original,
+        photo_compressed=photo_compressed,
+        photo_saved_percentage=photo_saved_percentage
     )
 
 
