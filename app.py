@@ -923,21 +923,13 @@ def add_user():
         flash("Username already exists.", "danger")
         return redirect('/admin/users')
     
-    # Get student email
-    cursor.execute("""
-        SELECT email
-        FROM students
-        WHERE username=%s
-    """, (username,))
+    # Email address entered in the Add New User form
+    student_email = request.form.get('email', '').strip()
 
-    student_data = cursor.fetchone()
-
-    if not student_data:
+    if not student_email:
         cursor.close()
-        flash("Student email not found.", "danger")
+        flash("Please enter the student's email address.", "danger")
         return redirect('/admin/users')
-
-    student_email = student_data[0]
 
     password_hash = generate_password_hash(password)
 

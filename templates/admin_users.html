@@ -130,15 +130,19 @@
         <h5>➕ Add New User</h5>
         <form method="POST" action="/admin/add_user">
             <div class="row g-3 align-items-end">
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <label style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;display:block;margin-bottom:6px;">Username</label>
                     <input type="text" name="username" class="form-input" placeholder="e.g. student001" required>
                 </div>
                 <div class="col-md-3">
+                    <label style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;display:block;margin-bottom:6px;">Email Address</label>
+                    <input type="email" name="email" class="form-input" placeholder="student@email.com" required>
+                </div>
+                <div class="col-md-2">
                     <label style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;display:block;margin-bottom:6px;">Password</label>
                     <input type="text" name="password" class="form-input" placeholder="Min 8 characters" required>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <label style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;display:block;margin-bottom:6px;">Role</label>
                     <select name="role" class="form-select">
                         <option value="student">Student</option>
