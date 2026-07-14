@@ -14,6 +14,8 @@ import random
 import boto3
 import traceback
 import shutil
+import smtplib
+from email.message import EmailMessage
 
 from datetime import datetime, timedelta
 
@@ -27,7 +29,6 @@ app.config['MAIL_DEFAULT_SENDER'] = os.environ.get('MAIL_USERNAME')
 
 mail = Mail(app)
 
-app.config["PROPAGATE_EXCEPTIONS"] = True
 app.debug = True
 
 # Secret Key
@@ -954,13 +955,14 @@ def add_user():
     # =========================================
     # Send Account Details Email
     # =========================================
-    try:
-        msg = Message(
-            subject="Smart Student Compression System - Your Account",
-            recipients=[student_email]
-        )
+    # Using raw smtplib here (instead of flask_mail's mail.send) so we
+    # can set an explicit socket timeout. Some hosts block/slow-walk
+    # outbound SMTP (port 587) — without a timeout that hang can take
+    # down the whole worker instead of just failing this one email.
 
-        msg.body = f"""
+    email_sent = False
+
+    email_body = f"""
 Dear Student,
 
 Your account has been created successfully.
@@ -982,7 +984,19 @@ Thank you,
 Smart Student Compression System
 """
 
-        mail.send(msg)
+    try:
+        email_msg = EmailMessage()
+        email_msg['Subject'] = "Smart Student Compression System - Your Account"
+        email_msg['From'] = app.config['MAIL_USERNAME']
+        email_msg['To'] = student_email
+        email_msg.set_content(email_body)
+
+        with smtplib.SMTP(app.config['MAIL_SERVER'], app.config['MAIL_PORT'], timeout=10) as server:
+            server.starttls()
+            server.login(app.config['MAIL_USERNAME'], app.config['MAIL_PASSWORD'])
+            server.send_message(email_msg)
+
+        email_sent = True
 
     except Exception as e:
         print("Email Error:", e)
@@ -991,7 +1005,10 @@ Smart Student Compression System
 
     log_activity(session['username'], "ADD_USER")
 
-    flash("User added successfully and email sent.", "success")
+    if email_sent:
+        flash("User added successfully and email sent.", "success")
+    else:
+        flash("User added successfully, but the account email could not be sent.", "warning")
 
     return redirect('/admin/users')
 
