@@ -1911,20 +1911,60 @@ def debug_brevo():
     return result
 
 # =========================================
-# Clear Uploaded Files (Temporary)
+# Database Structure (Temporary)
 # =========================================
-@app.route('/clear_files')
-def clear_files():
+@app.route('/db_structure')
+def db_structure():
 
     cursor = mysql.connection.cursor()
 
-    cursor.execute("DELETE FROM student_files")
+    cursor.execute("SHOW TABLES")
+    tables = cursor.fetchall()
 
-    mysql.connection.commit()
+    output = "<h2>Database Structure</h2>"
+
+    for table in tables:
+
+        table_name = table[0]
+
+        output += f"<h3>{table_name}</h3>"
+
+        cursor.execute(f"DESCRIBE {table_name}")
+
+        columns = cursor.fetchall()
+
+        output += """
+        <table border="1" cellpadding="8" cellspacing="0">
+        <tr>
+            <th>Field</th>
+            <th>Type</th>
+            <th>Null</th>
+            <th>Key</th>
+            <th>Default</th>
+            <th>Extra</th>
+        </tr>
+        """
+
+        for col in columns:
+
+            output += f"""
+            <tr>
+                <td>{col[0]}</td>
+                <td>{col[1]}</td>
+                <td>{col[2]}</td>
+                <td>{col[3]}</td>
+                <td>{col[4]}</td>
+                <td>{col[5]}</td>
+            </tr>
+            """
+
+        output += "</table><br><br>"
 
     cursor.close()
 
-    return "✅ student_files table cleared successfully!"
+    return output
+
+
 
 
 
