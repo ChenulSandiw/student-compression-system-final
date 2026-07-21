@@ -377,8 +377,8 @@
     <div class="hero au">
         <div class="hero-inner">
             <div class="hero-avatar">
-                {% if student and student[15] %}
-                    <img src="{{ url_for('static', filename='uploads/' + student[15]) }}" alt="">
+                {% if student and student[11] %}
+                    <img src="{{ url_for('static', filename='uploads/' + student[11]) }}" alt="">
                 {% else %}
                     👤
                 {% endif %}
@@ -397,8 +397,8 @@
                     {% else %}Student Portal{% endif %}
                 </div>
                 <div class="hero-tags">
-                    {% if student and student[8] %}<div class="htag">🆔 {{ student[8] }}</div>{% endif %}
-                    {% if student and student[14] %}<div class="htag">📅 {{ student[14] }}</div>{% endif %}
+                    {% if student and student[4] %}<div class="htag">🆔 {{ student[4] }}</div>{% endif %}
+                    {% if student and student[10] %}<div class="htag">📅 {{ student[10] }}</div>{% endif %}
                     <div class="htag">👤 Student</div>
                 </div>
             </div>
@@ -460,32 +460,32 @@
                     </div>
                     <div>
                         <div class="ii-label">Phone Number</div>
-                        {% if student[9] %}
-                        <div class="ii-value">{{ student[9] }}</div>
+                        {% if student[5] %}
+                        <div class="ii-value">{{ student[5] }}</div>
                         {% else %}
                         <div class="ii-value empty">Not provided</div>
                         {% endif %}
                     </div>
                     <div>
                         <div class="ii-label">Date of Birth</div>
-                        {% if student[11] %}
-                        <div class="ii-value">{{ student[11] }}</div>
+                        {% if student[7] %}
+                        <div class="ii-value">{{ student[7] }}</div>
                         {% else %}
                         <div class="ii-value empty">Not provided</div>
                         {% endif %}
                     </div>
                     <div>
                         <div class="ii-label">Gender</div>
-                        {% if student[12] %}
-                        <div class="ii-value">{{ student[12] }}</div>
+                        {% if student[8] %}
+                        <div class="ii-value">{{ student[8] }}</div>
                         {% else %}
                         <div class="ii-value empty">Not provided</div>
                         {% endif %}
                     </div>
                     <div>
                         <div class="ii-label">Address</div>
-                        {% if student[10] %}
-                        <div class="ii-value">{{ student[10] }}</div>
+                        {% if student[6] %}
+                        <div class="ii-value">{{ student[6] }}</div>
                         {% else %}
                         <div class="ii-value empty">Not provided</div>
                         {% endif %}
@@ -503,8 +503,8 @@
                 <div class="ig">
                     <div>
                         <div class="ii-label">Guardian / Parent Name</div>
-                        {% if student[13] %}
-                        <div class="ii-value">{{ student[13] }}</div>
+                        {% if student[9] %}
+                        <div class="ii-value">{{ student[9] }}</div>
                         {% else %}
                         <div class="ii-value empty">Not provided</div>
                         {% endif %}
@@ -531,16 +531,16 @@
                     </div>
                     <div>
                         <div class="ii-label">Student ID</div>
-                        {% if student[8] %}
-                        <div class="ii-value">{{ student[8] }}</div>
+                        {% if student[4] %}
+                        <div class="ii-value">{{ student[4] }}</div>
                         {% else %}
                         <div class="ii-value empty">Not assigned</div>
                         {% endif %}
                     </div>
                     <div>
                         <div class="ii-label">Year / Batch</div>
-                        {% if student[14] %}
-                        <div class="ii-value">{{ student[14] }}</div>
+                        {% if student[10] %}
+                        <div class="ii-value">{{ student[10] }}</div>
                         {% else %}
                         <div class="ii-value empty">Not assigned</div>
                         {% endif %}
