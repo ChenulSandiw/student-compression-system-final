@@ -813,7 +813,9 @@
                         <span>{{ photo_original_mb }} MB</span>
                     </div>
                     <div class="prog-track" style="height:10px;">
+                        {% if photo_total_original.value > 0 %}
                         <div style="height:100%;width:100%;background:rgba(37,99,235,.3);border-radius:100px;"></div>
+                        {% endif %}
                     </div>
                 </div>
 
