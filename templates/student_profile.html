@@ -231,8 +231,8 @@
         <div class="profile-hero-inner">
 
             <div class="profile-avatar">
-                {% if student[15] %}
-                    <img src="{{ url_for('static', filename='uploads/' + student[15]) }}" alt="profile">
+                {% if student[11] %}
+                    <img src="{{ url_for('static', filename='uploads/' + student[11]) }}" alt="profile">
                 {% else %}
                     👤
                 {% endif %}
@@ -241,13 +241,13 @@
             <div class="profile-hero-info">
                 <h1>{{ student[1] }}</h1>
                 <div class="pcode">
-                    {% if student[8] %}🆔 {{ student[8] }}{% else %}🆔 No ID assigned{% endif %}
+                    {% if student[4] %}🆔 {{ student[4] }}{% else %}🆔 No ID assigned{% endif %}
                 </div>
 
                 <div class="profile-tags">
                     <div class="ptag">📧 {{ student[2] }}</div>
                     <div class="ptag">🎓 {{ student[3] }}</div>
-                    {% if student[14] %}<div class="ptag">📅 {{ student[14] }}</div>{% endif %}
+                    {% if student[10] %}<div class="ptag">📅 {{ student[10] }}</div>{% endif %}
                 </div>
             </div>
 
@@ -280,32 +280,32 @@
                     </div>
                     <div class="info-item">
                         <div class="info-label">Phone</div>
-                        {% if student[9] %}
-                            <div class="info-value">{{ student[9] }}</div>
+                        {% if student[5] %}
+                            <div class="info-value">{{ student[5] }}</div>
                         {% else %}
                             <div class="info-value empty">Not provided</div>
                         {% endif %}
                     </div>
                     <div class="info-item">
                         <div class="info-label">Date of Birth</div>
-                        {% if student[11] %}
-                            <div class="info-value">{{ student[11] }}</div>
+                        {% if student[7] %}
+                            <div class="info-value">{{ student[7] }}</div>
                         {% else %}
                             <div class="info-value empty">Not provided</div>
                         {% endif %}
                     </div>
                     <div class="info-item">
                         <div class="info-label">Gender</div>
-                        {% if student[12] %}
-                            <div class="info-value">{{ student[12] }}</div>
+                        {% if student[8] %}
+                            <div class="info-value">{{ student[8] }}</div>
                         {% else %}
                             <div class="info-value empty">Not provided</div>
                         {% endif %}
                     </div>
                     <div class="info-item">
                         <div class="info-label">Address</div>
-                        {% if student[10] %}
-                            <div class="info-value">{{ student[10] }}</div>
+                        {% if student[6] %}
+                            <div class="info-value">{{ student[6] }}</div>
                         {% else %}
                             <div class="info-value empty">Not provided</div>
                         {% endif %}
@@ -323,16 +323,16 @@
                     </div>
                     <div class="info-item">
                         <div class="info-label">Year / Batch</div>
-                        {% if student[14] %}
-                            <div class="info-value">{{ student[14] }}</div>
+                        {% if student[10] %}
+                            <div class="info-value">{{ student[10] }}</div>
                         {% else %}
                             <div class="info-value empty">Not assigned</div>
                         {% endif %}
                     </div>
                     <div class="info-item">
                         <div class="info-label">Student ID</div>
-                        {% if student[8] %}
-                            <div class="info-value">{{ student[8] }}</div>
+                        {% if student[4] %}
+                            <div class="info-value">{{ student[4] }}</div>
                         {% else %}
                             <div class="info-value empty">Not assigned</div>
                         {% endif %}
@@ -346,8 +346,8 @@
                 <div class="info-grid">
                     <div class="info-item">
                         <div class="info-label">Guardian / Parent Name</div>
-                        {% if student[13] %}
-                            <div class="info-value">{{ student[13] }}</div>
+                        {% if student[9] %}
+                            <div class="info-value">{{ student[9] }}</div>
                         {% else %}
                             <div class="info-value empty">Not provided</div>
                         {% endif %}
