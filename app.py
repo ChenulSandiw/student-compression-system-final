@@ -771,15 +771,18 @@ def analytics():
 
 
 # =========================================
-# Save Profile Photo (compress + auto local/cloud switch)
+# Save Profile Photo (compress + always Cloud Storage)
 # =========================================
 def save_profile_photo(photo_file):
     """
     Saves an uploaded student profile photo.
     - Compresses/resizes the image
-    - Auto-switches storage: small files stay in Local Storage,
-      large files (>5MB after compression) go to Cloud Storage (S3),
-      same threshold used for document uploads.
+    - Always uploads to Cloud Storage (S3). Unlike document uploads,
+      profile photos are always pushed to S3 regardless of size —
+      Render's local disk is ephemeral (wiped on restart/redeploy and
+      not shared across instances), so a locally-saved photo can
+      randomly "disappear" after a refresh. S3 keeps it persistent
+      and available from any instance.
     Returns the filename to store in the DB, or None if no valid
     file was provided (caller should keep the existing photo).
     """
@@ -812,25 +815,21 @@ def save_profile_photo(photo_file):
     except Exception:
         pass
 
-    file_size = os.path.getsize(filepath)
+    content_type, _ = mimetypes.guess_type(filepath)
 
-    # Smart Storage — same 5MB threshold as document uploads
-    if file_size > 5000000:
+    if content_type is None:
+        content_type = "application/octet-stream"
 
-        content_type, _ = mimetypes.guess_type(filepath)
+    s3.upload_file(
+        filepath,
+        AWS_BUCKET,
+        filename,
+        ExtraArgs={"ContentType": content_type}
+    )
 
-        if content_type is None:
-            content_type = "application/octet-stream"
-
-        s3.upload_file(
-            filepath,
-            AWS_BUCKET,
-            filename,
-            ExtraArgs={"ContentType": content_type}
-        )
-
-        # Don't keep a local copy — /profile_photo route will
-        # fall back to Cloud Storage for this filename.
+    # Don't keep a local copy — the local disk is ephemeral on Render.
+    # /profile_photo always fetches this from Cloud Storage instead.
+    if os.path.exists(filepath):
         os.remove(filepath)
 
     return filename
