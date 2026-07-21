@@ -252,13 +252,19 @@ def create_table():
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS students (
         id INT AUTO_INCREMENT PRIMARY KEY,
+        student_code VARCHAR(100),
+        username VARCHAR(100) UNIQUE,
         name VARCHAR(255),
         email VARCHAR(255),
         course VARCHAR(255),
-        filename VARCHAR(255),
-        original_size BIGINT,
-        compressed_size BIGINT,
-        storage_type VARCHAR(100)
+        phone VARCHAR(20),
+        address TEXT,
+        dob DATE,
+        gender VARCHAR(20),
+        guardian_name VARCHAR(255),
+        batch VARCHAR(100),
+        photo VARCHAR(255)
+        
     )
     """)
 
