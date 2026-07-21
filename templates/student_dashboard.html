@@ -826,8 +826,9 @@
                     </div>
                     <div class="prog-track" style="height:10px;">
                         {% if photo_total_original.value > 0 %}
+                        {% set comp_ratio_pct = (photo_total_compressed.value / photo_total_original.value * 100)|round(1) %}
                         <div class="prog-fill" id="compBar"
-                             style="width:{{ [photo_saved_pct, 100]|min }}%;background:linear-gradient(90deg,var(--green),#34D399);"></div>
+                             style="width:{{ [comp_ratio_pct, 100]|min }}%;background:linear-gradient(90deg,var(--green),#34D399);"></div>
                         {% endif %}
                     </div>
                 </div>
