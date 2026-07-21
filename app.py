@@ -401,6 +401,101 @@ def dashboard():
     )
 
 # =========================================
+# Reset All Data (Students + Files)
+# =========================================
+@app.route('/reset_data', methods=['GET', 'POST'])
+def reset_data():
+
+    if 'logged_in' not in session:
+        return redirect('/login')
+
+    if session.get('role') != 'admin':
+        return redirect('/dashboard')
+
+    if request.method == 'GET':
+        return """
+        <div style="font-family:sans-serif;max-width:520px;margin:60px auto;
+                    padding:30px;border:1px solid #eee;border-radius:14px;
+                    box-shadow:0 4px 20px rgba(0,0,0,.08);">
+            <h2 style="color:#EF4444;">⚠️ Reset All Data</h2>
+            <p>This will permanently delete <b>every student record</b>,
+               every uploaded document/photo (local &amp; cloud), and reset
+               the dashboard counters back to zero.</p>
+            <p><b>This cannot be undone.</b> Login accounts are not affected.</p>
+            <form method="POST">
+                <button type="submit" style="background:#EF4444;color:#fff;border:none;
+                        padding:12px 22px;border-radius:10px;font-weight:700;
+                        cursor:pointer;margin-right:10px;">
+                    Yes, delete everything
+                </button>
+                <a href="/dashboard" style="text-decoration:none;color:#333;
+                   padding:12px 22px;border:1px solid #ccc;border-radius:10px;">
+                    Cancel
+                </a>
+            </form>
+        </div>
+        """
+
+    cursor = mysql.connection.cursor()
+
+    # Clean up uploaded documents/assignments (local + cloud)
+    cursor.execute("SELECT filename, storage_type FROM student_files")
+    files = cursor.fetchall()
+
+    for filename, storage_type in files:
+
+        if storage_type == "Cloud Storage":
+            try:
+                s3.delete_object(Bucket=AWS_BUCKET, Key=filename)
+            except Exception:
+                pass
+        else:
+            local_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            if os.path.exists(local_path):
+                os.remove(local_path)
+
+            compressed_path = os.path.join(
+                app.config['UPLOAD_FOLDER'], "compressed_" + filename
+            )
+            if os.path.exists(compressed_path):
+                os.remove(compressed_path)
+
+    # Clean up profile photos (local + cloud)
+    cursor.execute("SELECT photo FROM students WHERE photo IS NOT NULL")
+    photos = cursor.fetchall()
+
+    for (photo,) in photos:
+
+        if not photo:
+            continue
+
+        local_path = os.path.join(app.config['UPLOAD_FOLDER'], photo)
+
+        if os.path.exists(local_path):
+            os.remove(local_path)
+        else:
+            try:
+                s3.delete_object(Bucket=AWS_BUCKET, Key=photo)
+            except Exception:
+                pass
+
+    # Clear the tables and reset auto-increment counters
+    cursor.execute("DELETE FROM student_files")
+    cursor.execute("ALTER TABLE student_files AUTO_INCREMENT = 1")
+
+    cursor.execute("DELETE FROM students")
+    cursor.execute("ALTER TABLE students AUTO_INCREMENT = 1")
+
+    mysql.connection.commit()
+    cursor.close()
+
+    log_activity(session.get('username', 'admin'), "RESET_ALL_DATA")
+
+    flash("All student and file data has been cleared.", "success")
+
+    return redirect('/dashboard')
+
+# =========================================
 # Student Dashboard
 # =========================================
 @app.route('/student_dashboard')
