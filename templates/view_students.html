@@ -195,10 +195,7 @@
                         <th>#</th>
                         <th>Student</th>
                         <th>Course</th>
-                        <th>File</th>
-                        <th>Original</th>
-                        <th>Compressed</th>
-                        <th>Storage</th>
+                        <th>Student Code</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -211,74 +208,26 @@
                         <td>
                             <a href="/student_profile/{{ student[0] }}" class="student-cell">
                                 <div class="mini-avatar">
-                                    {% if student[15] %}
-                                        <img src="{{ url_for('static', filename='uploads/' + student[15]) }}" alt="">
+                                    {% if student[11] %}
+                                        <img src="{{ url_for('static', filename='uploads/' + student[11]) }}" alt="">
                                     {% else %}
                                         {{ student[1][0]|upper }}
                                     {% endif %}
                                 </div>
                                 <div>
                                     <div class="student-name-txt">{{ student[1] }}</div>
-                                    {% if student[8] %}
-                                        <div class="student-code-txt">🆔 {{ student[8] }}</div>
-                                    {% else %}
-                                        <div class="student-code-txt">{{ student[2] }}</div>
-                                    {% endif %}
+                                    <div class="student-code-txt">{{ student[2] }}</div>
                                 </div>
                             </a>
                         </td>
 
                         <td>{{ student[3] }}</td>
 
-                        <!-- File Preview -->
-                        <td>
-                            {% if student[4] %}
-                                {% set extension = student[4].split('.')[-1].lower() %}
-                            {% if extension in ['jpg', 'jpeg', 'png'] %}
-                                <img src="{{ url_for('static', filename='uploads/compressed_' + student[4]) }}" class="file-thumb">
-                            {% elif extension == 'pdf' %}
-                                <span class="badge badge-pdf">📕 PDF</span>
-                            {% elif extension == 'docx' %}
-                                <span class="badge badge-docx">📘 DOCX</span>
-                            {% endif %}
-
-                        {% else %}
-
-                            <span class="text-muted">No File</span>
-
-                        {% endif %}
-                        </td>
-
                         <td style="color:var(--muted);">
-                            {% if student[5] %}
-
-                                {{ student[5] }} B
-
+                            {% if student[4] %}
+                                🆔 {{ student[4] }}
                             {% else %}
                                 -
-                            {% endif %}
-                        </td>
-                        <td style="color:var(--green);font-weight:700;">
-                            {% if student[6] %}
-
-                                {{ student[6] }} B
-
-                                {% else %}
-                                    -
-                                {% endif %}
-                        </td>
-
-                        <td>
-                            {% if student[7] == 'Cloud Storage' %}
-                                <span class="badge badge-cloud">☁️ Cloud</span>
-                            {% elif student[7] == 'Local Storage' %}
-                                <span class="badge badge-local">💻 Local</span>
-
-                            {% else %}
-
-                                <span class="text-muted">-</span>
-
-                            
                             {% endif %}
                         </td>
 
@@ -286,10 +235,6 @@
                             <div style="display:flex;gap:6px;flex-wrap:wrap;">
                                 <a href="/student_profile/{{ student[0] }}" class="btn-view">👤 Profile</a>
                                 <a href="/edit_student/{{ student[0] }}" class="btn-edit">✏️ Edit</a>
-                            {% if student[4] %}
-                                <a href="/preview/{{ student[4] }}" target="_blank" class="btn-preview">👁</a>
-                                <a href="/download/{{ student[4] }}" class="btn-download">⬇️</a>
-                            {% endif %}    
                                 <a href="/delete_student/{{ student[0] }}" class="btn-danger"
                                    onclick="return confirm('Delete this student?')">🗑</a>
                             </div>
@@ -297,7 +242,7 @@
                     </tr>
                     {% else %}
                     <tr>
-                        <td colspan="8" style="text-align:center;padding:40px;color:var(--muted);">
+                        <td colspan="5" style="text-align:center;padding:40px;color:var(--muted);">
                             No students found. <a href="/add_student" style="color:var(--blue);">Add one →</a>
                         </td>
                     </tr>
