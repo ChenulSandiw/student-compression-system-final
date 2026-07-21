@@ -1964,6 +1964,35 @@ def db_structure():
 
     return output
 
+@app.route('/cleanup_duplicates')
+def cleanup_duplicates():
+
+    cursor = mysql.connection.cursor()
+    results = []
+
+    try:
+        # 1. Delete the unused duplicate 'activity_logs' table (plural)
+        cursor.execute("DROP TABLE IF EXISTS activity_logs")
+        results.append("✅ Dropped duplicate table: activity_logs")
+
+        # 2. Remove unused duplicate columns from 'students' table
+        #    (these are now handled by the student_files table instead)
+        for col in ['filename', 'original_size', 'compressed_size', 'storage_type']:
+            try:
+                cursor.execute(f"ALTER TABLE students DROP COLUMN {col}")
+                results.append(f"✅ Dropped column: students.{col}")
+            except Exception as e:
+                results.append(f"⚠️ Skipped students.{col}: {str(e)}")
+
+        mysql.connection.commit()
+
+    except Exception as e:
+        results.append(f"❌ Error: {str(e)}")
+
+    cursor.close()
+
+    return "<br>".join(results)
+
 
 
 
