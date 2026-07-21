@@ -209,7 +209,7 @@
                             <a href="/student_profile/{{ student[0] }}" class="student-cell">
                                 <div class="mini-avatar">
                                     {% if student[11] %}
-                                        <img src="{{ url_for('static', filename='uploads/' + student[11]) }}" alt="">
+                                        <img src="{{ url_for('profile_photo', filename=student[11]) }}" alt="">
                                     {% else %}
                                         {{ student[1][0]|upper }}
                                     {% endif %}

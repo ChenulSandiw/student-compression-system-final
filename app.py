@@ -16,6 +16,7 @@ import traceback
 import shutil
 import mimetypes
 import requests
+import uuid
 
 from datetime import datetime, timedelta
 
@@ -675,6 +676,99 @@ def analytics():
 
 
 # =========================================
+# Save Profile Photo (compress + auto local/cloud switch)
+# =========================================
+def save_profile_photo(photo_file):
+    """
+    Saves an uploaded student profile photo.
+    - Compresses/resizes the image
+    - Auto-switches storage: small files stay in Local Storage,
+      large files (>5MB after compression) go to Cloud Storage (S3),
+      same threshold used for document uploads.
+    Returns the filename to store in the DB, or None if no valid
+    file was provided (caller should keep the existing photo).
+    """
+
+    if not photo_file or photo_file.filename == "":
+        return None
+
+    allowed_extensions = ['png', 'jpg', 'jpeg']
+    file_extension = photo_file.filename.rsplit('.', 1)[-1].lower()
+
+    if file_extension not in allowed_extensions:
+        flash("Profile photo must be a JPG, JPEG or PNG file.", "danger")
+        return None
+
+    raw_name = secure_filename(photo_file.filename)
+    filename = f"photo_{uuid.uuid4().hex[:8]}_{raw_name}"
+
+    filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    photo_file.save(filepath)
+
+    # Resize + compress so profile photos stay small
+    try:
+        image = Image.open(filepath)
+        image.thumbnail((500, 500))
+
+        if image.mode in ("RGBA", "P"):
+            image = image.convert("RGB")
+
+        image.save(filepath, optimize=True, quality=75)
+    except Exception:
+        pass
+
+    file_size = os.path.getsize(filepath)
+
+    # Smart Storage — same 5MB threshold as document uploads
+    if file_size > 5000000:
+
+        content_type, _ = mimetypes.guess_type(filepath)
+
+        if content_type is None:
+            content_type = "application/octet-stream"
+
+        s3.upload_file(
+            filepath,
+            AWS_BUCKET,
+            filename,
+            ExtraArgs={"ContentType": content_type}
+        )
+
+        # Don't keep a local copy — /profile_photo route will
+        # fall back to Cloud Storage for this filename.
+        os.remove(filepath)
+
+    return filename
+
+
+# =========================================
+# Serve Profile Photo (local or cloud, transparently)
+# =========================================
+@app.route('/profile_photo/<filename>')
+def profile_photo(filename):
+
+    if 'logged_in' not in session:
+        return redirect('/login')
+
+    local_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+
+    if os.path.exists(local_path):
+        return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+
+    presigned_url = s3.generate_presigned_url(
+        'get_object',
+        Params={
+            'Bucket': AWS_BUCKET,
+            'Key': filename,
+            'ResponseContentDisposition': 'inline'
+        },
+        ExpiresIn=300
+    )
+
+    return redirect(presigned_url)
+
+
+# =========================================
 # Add Student
 # =========================================
 @app.route('/add_student', methods=['GET', 'POST'])
@@ -700,14 +794,17 @@ def add_student():
         guardian_name = request.form['guardian_name']
         batch = request.form['batch']
 
+        # Profile Photo
+        photo_filename = save_profile_photo(request.files.get('photo'))
+
         # Save to database
         cursor = mysql.connection.cursor()
 
         cursor.execute("""
             INSERT INTO students
-            (username,name,email,course,student_code,phone,address,dob,gender,guardian_name,batch)
+            (username,name,email,course,student_code,phone,address,dob,gender,guardian_name,batch,photo)
 
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         """, (
             username,
             name,
@@ -719,7 +816,8 @@ def add_student():
             dob,
             gender,
             guardian_name,
-            batch
+            batch,
+            photo_filename
         ))
 
         mysql.connection.commit()
@@ -804,32 +902,68 @@ def edit_student(id):
         guardian_name = request.form['guardian_name']
         batch = request.form['batch']
 
-        cursor.execute("""
-            UPDATE students
-            SET name=%s,
-                email=%s,
-                course=%s,
-                student_code=%s,
-                phone=%s,
-                address=%s,
-                dob=%s,
-                gender=%s,
-                guardian_name=%s,
-                batch=%s       
-            WHERE id=%s
-        """, (
-            name,
-            email,
-            course,
-            student_code,
-            phone,
-            address,
-            dob,
-            gender,
-            guardian_name,
-            batch,
-            id
-        ))
+        # Profile Photo — only replace it if a new file was uploaded
+        photo_filename = save_profile_photo(request.files.get('photo'))
+
+        if photo_filename:
+
+            cursor.execute("""
+                UPDATE students
+                SET name=%s,
+                    email=%s,
+                    course=%s,
+                    student_code=%s,
+                    phone=%s,
+                    address=%s,
+                    dob=%s,
+                    gender=%s,
+                    guardian_name=%s,
+                    batch=%s,
+                    photo=%s
+                WHERE id=%s
+            """, (
+                name,
+                email,
+                course,
+                student_code,
+                phone,
+                address,
+                dob,
+                gender,
+                guardian_name,
+                batch,
+                photo_filename,
+                id
+            ))
+
+        else:
+
+            cursor.execute("""
+                UPDATE students
+                SET name=%s,
+                    email=%s,
+                    course=%s,
+                    student_code=%s,
+                    phone=%s,
+                    address=%s,
+                    dob=%s,
+                    gender=%s,
+                    guardian_name=%s,
+                    batch=%s       
+                WHERE id=%s
+            """, (
+                name,
+                email,
+                course,
+                student_code,
+                phone,
+                address,
+                dob,
+                gender,
+                guardian_name,
+                batch,
+                id
+            ))
 
         mysql.connection.commit()
 

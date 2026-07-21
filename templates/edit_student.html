@@ -101,6 +101,35 @@
         }
         .btn-secondary-custom:hover { background:var(--surface); transform:translateY(-2px); border-color:var(--blue); }
 
+        .upload-zone {
+            border: 2px dashed var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+            background: var(--surface2);
+            transition: all .22s;
+            cursor: pointer;
+            position: relative;
+        }
+        .upload-zone:hover { border-color: var(--blue); background: rgba(37,99,235,.03); }
+        .upload-zone small { color: var(--muted); font-size: 11px; display:block; margin-top:4px; }
+        .upload-zone input[type="file"] {
+            position: absolute; inset: 0; opacity: 0; cursor: pointer;
+        }
+
+        .photo-preview-wrap {
+            display:flex; align-items:center; gap:20px; margin-top: 6px;
+        }
+        .photo-preview {
+            width: 84px; height: 84px; border-radius: 18px;
+            background: var(--surface2);
+            border: 2px dashed var(--border);
+            display:flex; align-items:center; justify-content:center;
+            font-size: 30px; color: var(--muted);
+            overflow: hidden; flex-shrink:0;
+        }
+        .photo-preview img { width:100%; height:100%; object-fit:cover; }
+
         @keyframes slideUp { from{opacity:0;transform:translateY(20px);} to{opacity:1;transform:translateY(0);} }
         @keyframes fadeIn  { from{opacity:0;} to{opacity:1;} }
         .au { animation: slideUp .48s ease both; }
@@ -154,11 +183,29 @@
         <p>Modify any of the details below and save changes</p>
     </div>
 
-    <form method="POST">
+    <form method="POST" enctype="multipart/form-data">
 
         <!-- Basic Info -->
         <div class="card-glass form-section au d1">
             <h5>👤 Basic Information</h5>
+            <div class="row g-4 mb-2">
+                <div class="col-md-3">
+                    <label class="form-label-custom">Profile Photo</label>
+                    <div class="photo-preview-wrap">
+                        <div class="photo-preview" id="photoPreview">
+                            {% if student[11] %}
+                                <img src="{{ url_for('profile_photo', filename=student[11]) }}" alt="">
+                            {% else %}
+                                📷
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="upload-zone mt-2" style="padding:14px;">
+                        <small style="margin:0;">Click to change photo</small>
+                        <input type="file" name="photo" id="photoInput" accept=".jpg,.jpeg,.png" onchange="previewPhoto(event)">
+                    </div>
+                </div>
+            </div>
             <div class="row g-3">
                 <div class="col-md-6">
                     <label class="form-label-custom">Full Name *</label>
@@ -252,6 +299,17 @@ function toggleDark() {
     const on = document.body.classList.contains('dark');
     document.getElementById('darkIcon').textContent  = on ? '☀️' : '🌙';
     document.getElementById('darkLabel').textContent = on ? 'Light Mode' : 'Dark Mode';
+}
+
+function previewPhoto(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        document.getElementById('photoPreview').innerHTML =
+            `<img src="${e.target.result}" alt="preview">`;
+    };
+    reader.readAsDataURL(file);
 }
 </script>
 </body>

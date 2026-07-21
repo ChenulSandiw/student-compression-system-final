@@ -378,7 +378,7 @@
         <div class="hero-inner">
             <div class="hero-avatar">
                 {% if student and student[11] %}
-                    <img src="{{ url_for('static', filename='uploads/' + student[11]) }}" alt="">
+                    <img src="{{ url_for('profile_photo', filename=student[11]) }}" alt="">
                 {% else %}
                     👤
                 {% endif %}
