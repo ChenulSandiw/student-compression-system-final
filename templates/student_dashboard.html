@@ -821,7 +821,9 @@
                     </div>
                     <div class="prog-track" style="height:10px;">
                         {% if photo_total_original.value > 0 %}
-                        <div style="height:100%;width:100%;background:rgba(37,99,235,.3);border-radius:100px;"></div>
+                        {% set bar_scale_max = [photo_original_mb, 10]|max %}
+                        {% set original_bar_pct = ([photo_original_mb / bar_scale_max * 100, 100]|min) %}
+                        <div style="height:100%;width:{{ original_bar_pct }}%;background:rgba(37,99,235,.55);border-radius:100px;"></div>
                         {% endif %}
                     </div>
                 </div>
@@ -833,9 +835,9 @@
                     </div>
                     <div class="prog-track" style="height:10px;">
                         {% if photo_total_original.value > 0 %}
-                        {% set comp_ratio_pct = (photo_total_compressed.value / photo_total_original.value * 100)|round(1) %}
+                        {% set compressed_bar_pct = ([photo_compressed_mb / bar_scale_max * 100, 100]|min) %}
                         <div class="prog-fill" id="compBar"
-                             style="width:{{ [comp_ratio_pct, 100]|min }}%;background:linear-gradient(90deg,var(--green),#34D399);"></div>
+                             style="width:{{ compressed_bar_pct }}%;background:linear-gradient(90deg,var(--green),#34D399);"></div>
                         {% endif %}
                     </div>
                 </div>
