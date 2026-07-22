@@ -630,6 +630,7 @@
         {% if files %}
         {% set files_total_original = namespace(value=0) %}
         {% set files_total_compressed = namespace(value=0) %}
+        {% set files_local_space_used = namespace(value=0) %}
         {% set files_cloud_count = namespace(value=0) %}
         {% set files_local_count = namespace(value=0) %}
         {% for f in files %}
@@ -637,8 +638,10 @@
             {% set files_total_compressed.value = files_total_compressed.value + (f[4]|int if f[4] else 0) %}
             {% if f[5] == 'Cloud Storage' %}
                 {% set files_cloud_count.value = files_cloud_count.value + 1 %}
+                {# Cloud files don't sit on local disk at all — 0 local space used #}
             {% elif f[5] == 'Local Storage' %}
                 {% set files_local_count.value = files_local_count.value + 1 %}
+                {% set files_local_space_used.value = files_local_space_used.value + (f[4]|int if f[4] else 0) %}
             {% endif %}
         {% endfor %}
 
@@ -656,13 +659,17 @@
                 </div>
 
                 {% if files_total_original.value > 0 %}
-                {% set saved_pct = ((files_total_original.value - files_total_compressed.value) / files_total_original.value * 100)|round(1) %}
+                {% set local_space_saved_bytes = files_total_original.value - files_local_space_used.value %}
+                {% set saved_pct = (local_space_saved_bytes / files_total_original.value * 100)|round(1) %}
                 <div class="prog-row">
                     <span>Space saved</span>
                     <span>{{ saved_pct }}%</span>
                 </div>
                 <div class="prog-track">
                     <div class="prog-fill" style="width:{{ [saved_pct, 100]|min }}%;"></div>
+                </div>
+                <div style="font-size:11px;color:var(--muted);margin-top:6px;">
+                    From compression + files moved to cloud instead of local storage
                 </div>
                 {% endif %}
 
