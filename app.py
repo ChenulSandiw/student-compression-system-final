@@ -610,6 +610,98 @@ def add_foreign_key():
     return redirect('/dashboard')
 
 # =========================================
+# Verify Foreign Key
+# =========================================
+@app.route('/verify_foreign_key')
+def verify_foreign_key():
+
+    if 'logged_in' not in session:
+        return redirect('/login')
+
+    if session.get('role') != 'admin':
+        return redirect('/dashboard')
+
+    cursor = mysql.connection.cursor()
+
+    # Look up the actual database name Flask is connected to
+    cursor.execute("SELECT DATABASE()")
+    db_name = cursor.fetchone()[0]
+
+    # Check for the FK constraint
+    cursor.execute("""
+        SELECT CONSTRAINT_NAME, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME
+        FROM information_schema.KEY_COLUMN_USAGE
+        WHERE TABLE_SCHEMA = %s
+          AND TABLE_NAME = 'student_files'
+          AND REFERENCED_TABLE_NAME IS NOT NULL
+    """, (db_name,))
+    fk_rows = cursor.fetchall()
+
+    # Check for the UNIQUE key on students.username
+    cursor.execute("""
+        SELECT INDEX_NAME
+        FROM information_schema.STATISTICS
+        WHERE TABLE_SCHEMA = %s
+          AND TABLE_NAME = 'students'
+          AND COLUMN_NAME = 'username'
+          AND NON_UNIQUE = 0
+    """, (db_name,))
+    unique_rows = cursor.fetchall()
+
+    cursor.close()
+
+    fk_html = ""
+    if fk_rows:
+        for name, col, ref_table, ref_col in fk_rows:
+            fk_html += f"""
+            <div style="background:#ecfdf5;border:1px solid #10B981;border-radius:10px;padding:14px 18px;margin-bottom:10px;">
+                ✅ <b>{name}</b><br>
+                <code>student_files.{col}</code> → <code>{ref_table}.{ref_col}</code>
+            </div>
+            """
+    else:
+        fk_html = """
+        <div style="background:#fef2f2;border:1px solid #EF4444;border-radius:10px;padding:14px 18px;margin-bottom:10px;">
+            ❌ No foreign key found on student_files yet.
+        </div>
+        """
+
+    unique_html = ""
+    if unique_rows:
+        unique_html = f"""
+        <div style="background:#ecfdf5;border:1px solid #10B981;border-radius:10px;padding:14px 18px;">
+            ✅ <code>students.username</code> has a UNIQUE key
+            (<b>{unique_rows[0][0]}</b>)
+        </div>
+        """
+    else:
+        unique_html = """
+        <div style="background:#fef2f2;border:1px solid #EF4444;border-radius:10px;padding:14px 18px;">
+            ❌ <code>students.username</code> has no UNIQUE key yet.
+        </div>
+        """
+
+    return f"""
+    <div style="font-family:sans-serif;max-width:600px;margin:60px auto;
+                padding:30px;border:1px solid #eee;border-radius:14px;
+                box-shadow:0 4px 20px rgba(0,0,0,.08);">
+        <h2 style="color:#2563EB;">🔍 Foreign key status</h2>
+        <p style="color:#666;margin-bottom:18px;">Database: <code>{db_name}</code></p>
+
+        <h4>Foreign key on student_files</h4>
+        {fk_html}
+
+        <h4 style="margin-top:18px;">Unique key on students.username</h4>
+        {unique_html}
+
+        <a href="/dashboard" style="display:inline-block;margin-top:22px;text-decoration:none;color:#333;
+           padding:10px 20px;border:1px solid #ccc;border-radius:10px;">
+            Back to dashboard
+        </a>
+    </div>
+    """
+
+# =========================================
 # Student Dashboard
 # =========================================
 @app.route('/student_dashboard')
