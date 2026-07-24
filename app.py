@@ -496,6 +496,120 @@ def reset_data():
     return redirect('/dashboard')
 
 # =========================================
+# Add Foreign Key (students.username -> student_files.username)
+# =========================================
+@app.route('/add_foreign_key', methods=['GET', 'POST'])
+def add_foreign_key():
+
+    if 'logged_in' not in session:
+        return redirect('/login')
+
+    if session.get('role') != 'admin':
+        return redirect('/dashboard')
+
+    cursor = mysql.connection.cursor()
+
+    # Find student_files rows whose username has no matching student —
+    # a real FK constraint cannot be added while these exist.
+    cursor.execute("""
+        SELECT sf.id, sf.username, sf.filename
+        FROM student_files sf
+        LEFT JOIN students s ON sf.username = s.username
+        WHERE s.username IS NULL
+    """)
+    orphans = cursor.fetchall()
+
+    if request.method == 'GET':
+
+        orphan_rows = "".join(
+            f"<tr><td>{o[0]}</td><td>{o[1]}</td><td>{o[2]}</td></tr>"
+            for o in orphans
+        )
+
+        orphan_block = ""
+        if orphans:
+            orphan_block = f"""
+            <p style="color:#EF4444;"><b>{len(orphans)} orphan file record(s)
+               found</b> — their username doesn't match any student.
+               These will be <b>deleted</b> before the foreign key is added,
+               otherwise MySQL will reject the constraint.</p>
+            <table style="width:100%;border-collapse:collapse;margin-bottom:16px;">
+                <tr style="background:#f5f5f5;">
+                    <th style="padding:6px;text-align:left;">ID</th>
+                    <th style="padding:6px;text-align:left;">Username</th>
+                    <th style="padding:6px;text-align:left;">Filename</th>
+                </tr>
+                {orphan_rows}
+            </table>
+            """
+        else:
+            orphan_block = "<p style='color:#10B981;'>No orphan records found — safe to proceed.</p>"
+
+        return f"""
+        <div style="font-family:sans-serif;max-width:600px;margin:60px auto;
+                    padding:30px;border:1px solid #eee;border-radius:14px;
+                    box-shadow:0 4px 20px rgba(0,0,0,.08);">
+            <h2 style="color:#2563EB;">🔗 Link students &amp; student_files</h2>
+            <p>This will:</p>
+            <ol>
+                <li>Add a <b>UNIQUE</b> constraint on <code>students.username</code></li>
+                <li>Add a <b>FOREIGN KEY</b> on <code>student_files.username</code>
+                    referencing <code>students.username</code>,
+                    with <code>ON DELETE CASCADE</code> — deleting a student
+                    will automatically delete their files too.</li>
+            </ol>
+            {orphan_block}
+            <form method="POST">
+                <button type="submit" style="background:#2563EB;color:#fff;border:none;
+                        padding:12px 22px;border-radius:10px;font-weight:700;
+                        cursor:pointer;margin-right:10px;">
+                    Add the foreign key
+                </button>
+                <a href="/dashboard" style="text-decoration:none;color:#333;
+                   padding:12px 22px;border:1px solid #ccc;border-radius:10px;">
+                    Cancel
+                </a>
+            </form>
+        </div>
+        """
+
+    # POST — remove orphans, then add the constraints
+    try:
+        if orphans:
+            cursor.execute("""
+                DELETE sf FROM student_files sf
+                LEFT JOIN students s ON sf.username = s.username
+                WHERE s.username IS NULL
+            """)
+
+        cursor.execute("""
+            ALTER TABLE students
+            ADD UNIQUE KEY unique_username (username)
+        """)
+
+        cursor.execute("""
+            ALTER TABLE student_files
+            ADD CONSTRAINT fk_student_files_username
+            FOREIGN KEY (username) REFERENCES students(username)
+            ON DELETE CASCADE
+            ON UPDATE CASCADE
+        """)
+
+        mysql.connection.commit()
+        cursor.close()
+
+        log_activity(session.get('username', 'admin'), "ADD_FOREIGN_KEY")
+
+        flash("Foreign key added — students and student_files are now linked at the database level.", "success")
+
+    except Exception as e:
+        mysql.connection.rollback()
+        cursor.close()
+        flash(f"Failed to add foreign key: {e}", "danger")
+
+    return redirect('/dashboard')
+
+# =========================================
 # Student Dashboard
 # =========================================
 @app.route('/student_dashboard')
