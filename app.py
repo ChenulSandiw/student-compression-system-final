@@ -2345,6 +2345,69 @@ def debug_brevo():
     return result
 
 # =========================================
+# Show the students <-> student_files relationship (JOIN demo)
+# =========================================
+@app.route('/show_relationship')
+def show_relationship():
+
+    if 'logged_in' not in session:
+        return redirect('/login')
+
+    cursor = mysql.connection.cursor()
+
+    cursor.execute("""
+        SELECT s.name, s.course, sf.filename, sf.storage_type
+        FROM students s
+        JOIN student_files sf ON s.username = sf.username
+        ORDER BY s.name
+    """)
+    rows = cursor.fetchall()
+    cursor.close()
+
+    if rows:
+        table_rows = "".join(
+            f"""<tr>
+                <td style="padding:8px;border:1px solid #ddd;">{r[0]}</td>
+                <td style="padding:8px;border:1px solid #ddd;">{r[1]}</td>
+                <td style="padding:8px;border:1px solid #ddd;">{r[2]}</td>
+                <td style="padding:8px;border:1px solid #ddd;">{r[3]}</td>
+            </tr>"""
+            for r in rows
+        )
+        body = f"""
+        <p style="color:#10B981;font-weight:700;">{len(rows)} row(s) returned —
+           this JOIN only works because student_files.username matches
+           students.username.</p>
+        <table style="width:100%;border-collapse:collapse;">
+            <tr style="background:#f5f5f5;">
+                <th style="padding:8px;border:1px solid #ddd;text-align:left;">Student</th>
+                <th style="padding:8px;border:1px solid #ddd;text-align:left;">Course</th>
+                <th style="padding:8px;border:1px solid #ddd;text-align:left;">Filename</th>
+                <th style="padding:8px;border:1px solid #ddd;text-align:left;">Storage</th>
+            </tr>
+            {table_rows}
+        </table>
+        """
+    else:
+        body = "<p>No files uploaded by any student yet — upload one from the student dashboard to see it appear here.</p>"
+
+    return f"""
+    <div style="font-family:sans-serif;max-width:800px;margin:60px auto;
+                padding:30px;border:1px solid #eee;border-radius:14px;
+                box-shadow:0 4px 20px rgba(0,0,0,.08);">
+        <h2 style="color:#2563EB;">🔗 students ⟷ student_files relationship</h2>
+        <p style="color:#666;font-size:13px;">Query: SELECT s.name, s.course, sf.filename, sf.storage_type
+           FROM students s JOIN student_files sf ON s.username = sf.username</p>
+        {body}
+        <br>
+        <a href="/dashboard" style="text-decoration:none;color:#333;
+           padding:10px 18px;border:1px solid #ccc;border-radius:10px;">
+            Back to dashboard
+        </a>
+    </div>
+    """
+
+# =========================================
 # Database Structure (Temporary)
 # =========================================
 @app.route('/db_structure')
