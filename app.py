@@ -1612,7 +1612,7 @@ def add_user():
                     "email": os.environ.get('BREVO_SENDER_EMAIL')
                 },
                 "to": [{"email": student_email}],
-                "subject": "Smart Student Compression System - Your Account",
+                "subject": "Smart Student Compression System - Your Account Is Ready",
                 "htmlContent": email_body_html
             },
             timeout=10
