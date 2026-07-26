@@ -2526,6 +2526,67 @@ def test_join():
     html += "</table></div>"
     return html
 
+@app.route('/test_all_relationships')
+def test_all_relationships():
+
+    cursor = mysql.connection.cursor()
+
+    html = "<div style='font-family:sans-serif;padding:30px;max-width:900px;'>"
+
+    # Relationship 1: students <-> student_files
+    cursor.execute("""
+        SELECT s.name, s.course, sf.filename, sf.storage_type
+        FROM students s
+        JOIN student_files sf ON s.username = sf.username
+    """)
+    rows1 = cursor.fetchall()
+
+    html += "<h2>🔗 1. students ↔ student_files</h2>"
+    html += f"<p style='color:green;'>{len(rows1)} row(s) returned</p>"
+    html += "<table border='1' cellpadding='8' style='border-collapse:collapse;width:100%;margin-bottom:30px;'>"
+    html += "<tr style='background:#eee;'><th>Student</th><th>Course</th><th>Filename</th><th>Storage</th></tr>"
+    for row in rows1:
+        html += f"<tr><td>{row[0]}</td><td>{row[1]}</td><td>{row[2]}</td><td>{row[3]}</td></tr>"
+    html += "</table>"
+
+    # Relationship 2: users <-> students
+    cursor.execute("""
+        SELECT u.username, u.role, s.name, s.course
+        FROM users u
+        JOIN students s ON u.username = s.username
+    """)
+    rows2 = cursor.fetchall()
+
+    html += "<h2>🔗 2. users ↔ students</h2>"
+    html += f"<p style='color:green;'>{len(rows2)} row(s) returned</p>"
+    html += "<table border='1' cellpadding='8' style='border-collapse:collapse;width:100%;margin-bottom:30px;'>"
+    html += "<tr style='background:#eee;'><th>Username</th><th>Role</th><th>Student Name</th><th>Course</th></tr>"
+    for row in rows2:
+        html += f"<tr><td>{row[0]}</td><td>{row[1]}</td><td>{row[2]}</td><td>{row[3]}</td></tr>"
+    html += "</table>"
+
+    # Relationship 3: users <-> activity_log
+    cursor.execute("""
+        SELECT u.username, u.role, al.action, al.created_at
+        FROM users u
+        JOIN activity_log al ON u.username = al.username
+        ORDER BY al.created_at DESC
+        LIMIT 10
+    """)
+    rows3 = cursor.fetchall()
+
+    html += "<h2>🔗 3. users ↔ activity_log</h2>"
+    html += f"<p style='color:green;'>{len(rows3)} row(s) returned (latest 10)</p>"
+    html += "<table border='1' cellpadding='8' style='border-collapse:collapse;width:100%;'>"
+    html += "<tr style='background:#eee;'><th>Username</th><th>Role</th><th>Action</th><th>Time</th></tr>"
+    for row in rows3:
+        html += f"<tr><td>{row[0]}</td><td>{row[1]}</td><td>{row[2]}</td><td>{row[3]}</td></tr>"
+    html += "</table>"
+
+    html += "</div>"
+
+    cursor.close()
+    return html
 
 
 
