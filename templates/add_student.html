@@ -169,15 +169,20 @@
 </head>
 <body>
 
-<div class="toast-wrap" id="toastWrap">
+<div style="max-width:900px;margin:0 auto;padding:20px 20px 0;">
     {% with messages = get_flashed_messages(with_categories=true) %}
-        {% for category, message in messages %}
-        <div class="toast {{ 'success' if category == 'success' else '' }}">
-            <span class="toast-icon">{{ '✅' if category == 'success' else '⚠️' }}</span>
-            <span class="toast-msg">{{ message }}</span>
-            <span class="toast-close" onclick="this.parentElement.remove()">✕</span>
-        </div>
-        {% endfor %}
+        {% if messages %}
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }}" role="alert"
+                 style="margin-bottom:20px;border-radius:12px;padding:15px 44px 15px 15px;font-weight:600;position:relative;">
+                {{ message }}
+                <span onclick="this.parentElement.remove()"
+                      style="position:absolute;top:50%;right:15px;transform:translateY(-50%);cursor:pointer;font-weight:900;font-size:18px;line-height:1;">
+                    ✕
+                </span>
+            </div>
+            {% endfor %}
+        {% endif %}
     {% endwith %}
 </div>
 
@@ -373,14 +378,6 @@ function showFileName(event) {
         chosen.style.display = 'none';
     }
 }
-</script>
-<script>
-document.querySelectorAll('#toastWrap .toast').forEach(function(toast){
-    setTimeout(function(){
-        toast.style.animation = 'toastOut .3s ease both';
-        setTimeout(function(){ toast.remove(); }, 300);
-    }, 4000);
-});
 </script>
 </body>
 </html>
