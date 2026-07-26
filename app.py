@@ -2461,6 +2461,71 @@ def db_structure():
 
     return output
 
+@app.route('/fk_status')
+def fk_status():
+
+    cursor = mysql.connection.cursor()
+
+    cursor.execute("""
+        SELECT
+            CONSTRAINT_NAME,
+            TABLE_NAME,
+            COLUMN_NAME,
+            REFERENCED_TABLE_NAME,
+            REFERENCED_COLUMN_NAME
+        FROM information_schema.KEY_COLUMN_USAGE
+        WHERE REFERENCED_TABLE_NAME IS NOT NULL
+        AND TABLE_SCHEMA = DATABASE()
+    """)
+
+    fks = cursor.fetchall()
+    cursor.close()
+
+    html = "<div style='font-family:sans-serif;padding:30px;max-width:700px;'>"
+    html += "<h2>🔍 Foreign Key Status</h2>"
+
+    if not fks:
+        html += "<p style='color:red;'>❌ No foreign keys found in this database.</p>"
+
+    for fk in fks:
+        html += f"""
+        <div style='background:#e8f8f0;border:1px solid #a3e4c1;border-radius:8px;padding:15px;margin-bottom:12px;'>
+            ✅ <b>{fk[0]}</b><br>
+            <code>{fk[1]}.{fk[2]} → {fk[3]}.{fk[4]}</code>
+        </div>
+        """
+
+    html += "</div>"
+    return html
+
+
+@app.route('/test_join')
+def test_join():
+
+    cursor = mysql.connection.cursor()
+
+    cursor.execute("""
+        SELECT s.name, s.course, sf.filename, sf.storage_type
+        FROM students s
+        JOIN student_files sf ON s.username = sf.username
+    """)
+
+    rows = cursor.fetchall()
+    cursor.close()
+
+    html = "<div style='font-family:sans-serif;padding:30px;max-width:800px;'>"
+    html += "<h2>🔗 students ↔ student_files relationship</h2>"
+    html += f"<p style='color:green;'>{len(rows)} row(s) returned — JOIN works because student_files.username matches students.username.</p>"
+
+    html += "<table border='1' cellpadding='10' style='border-collapse:collapse;width:100%;'>"
+    html += "<tr style='background:#eee;'><th>Student</th><th>Course</th><th>Filename</th><th>Storage</th></tr>"
+
+    for row in rows:
+        html += f"<tr><td>{row[0]}</td><td>{row[1]}</td><td>{row[2]}</td><td>{row[3]}</td></tr>"
+
+    html += "</table></div>"
+    return html
+
 
 
 
