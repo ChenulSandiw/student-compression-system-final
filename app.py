@@ -1100,6 +1100,18 @@ def add_student():
         # Save to database
         cursor = mysql.connection.cursor()
 
+        # Check if this username already has a student profile
+        cursor.execute(
+            "SELECT id FROM students WHERE username=%s",
+            [username]
+        )
+        existing_student = cursor.fetchone()
+
+        if existing_student:
+            cursor.close()
+            flash("A student profile already exists for this username. Please use a different username.", "danger")
+            return redirect('/add_student')
+
         cursor.execute("""
             INSERT INTO students
             (username,name,email,course,student_code,phone,address,dob,gender,guardian_name,batch,photo)
