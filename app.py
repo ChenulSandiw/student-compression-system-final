@@ -1586,17 +1586,16 @@ def add_user():
     <p>
         <b>Username:</b> {username}<br>
         <b>Password:</b> {password}<br>
-        <b>Role:</b> {role}
     </p>
     <hr>
     <p>
         Login Here:
-        <a href="https://student-compression-system.onrender.com/login">
-            https://student-compression-system.onrender.com/login
+        <a href="https://student-compression-system-final.onrender.com/login">
+            https://student-compression-system-final.onrender.com/login
         </a>
     </p>
     <p>Please change your password after your first login.</p>
-    <p>Thank you,<br>Smart Student Compression System</p>
+    <p>Thank you.</p>
     """
 
     try:
