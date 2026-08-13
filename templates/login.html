@@ -174,7 +174,12 @@
                 </div>
                 <div class="form-group">
                     <label>Password</label>
-                    <input type="password" name="password" placeholder="Enter password" required>
+                    <div style="position:relative;">
+                        <input type="password" name="password" id="passwordField" placeholder="Enter password" required style="padding-right:44px;">
+                        <span onclick="togglePassword()" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);cursor:pointer;font-size:17px;user-select:none;">
+                            👁️
+                        </span>
+                    </div>
                 </div>
                 <button type="submit" class="btn-login">🔐 Login to Dashboard</button>
             </form>
