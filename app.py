@@ -2376,6 +2376,27 @@ def db_structure():
 
     return output
 
+@app.route('/reset_all_data')
+def reset_all_data():
+    if 'logged_in' not in session or session.get('role') != 'admin':
+        return redirect('/login')
+
+    cursor = mysql.connection.cursor()
+
+    cursor.execute("DELETE FROM student_files")
+    cursor.execute("DELETE FROM students")
+    cursor.execute("DELETE FROM activity_log")
+    cursor.execute("DELETE FROM users WHERE role != 'admin'")
+
+    cursor.execute("ALTER TABLE student_files AUTO_INCREMENT = 1")
+    cursor.execute("ALTER TABLE students AUTO_INCREMENT = 1")
+    cursor.execute("ALTER TABLE activity_log AUTO_INCREMENT = 1")
+
+    mysql.connection.commit()
+    cursor.close()
+
+    return "Data reset successful. Only the admin account remains."
+
 
 
 
