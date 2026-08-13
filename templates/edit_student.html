@@ -171,9 +171,12 @@
                 <p>Update {{ student[1] }}'s profile</p>
             </div>
         </div>
-        <button class="dark-toggle" onclick="toggleDark()">
-            <span id="darkIcon">🌙</span><span id="darkLabel">Dark Mode</span>
-        </button>
+        <div style="display:flex;gap:8px;align-items:center;">
+            <a href="/dashboard" class="dark-toggle" style="text-decoration:none;">⬅ Back to Dashboard</a>
+            <button class="dark-toggle" onclick="toggleDark()">
+                <span id="darkIcon">🌙</span><span id="darkLabel">Dark Mode</span>
+            </button>
+        </div>
     </div>
 
     <div class="page-header au">

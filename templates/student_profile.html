@@ -221,9 +221,13 @@
                 <p>Full details and uploaded documents</p>
             </div>
         </div>
-        <button class="dark-toggle" onclick="toggleDark()">
-            <span id="darkIcon">🌙</span><span id="darkLabel">Dark Mode</span>
-        </button>
+        <div style="display:flex;gap:8px;align-items:center;">
+            <a href="{% if session.get('role') == 'admin' %}/dashboard{% else %}/student_dashboard{% endif %}"
+               class="dark-toggle" style="text-decoration:none;">⬅ Back to Dashboard</a>
+            <button class="dark-toggle" onclick="toggleDark()">
+                <span id="darkIcon">🌙</span><span id="darkLabel">Dark Mode</span>
+            </button>
+        </div>
     </div>
 
     <!-- ═══ PROFILE HERO ═══ -->
