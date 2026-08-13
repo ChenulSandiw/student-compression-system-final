@@ -477,6 +477,19 @@ body.dark textarea {
     color:#E2E8F0;
 }
 
+.password-toggle {
+    position: absolute;
+    right: 14px;
+    top: 58%;   /* was 50% — pushed down a little */
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    user-select: none;
+}
 .browse-btn{
 
     display:inline-block;
